@@ -258,7 +258,8 @@
 						"\tconst deltaTime = runtime.dt;",
 						"",
 						"\tconst solidObstacles = [...grounds, ...boxes];",
-						"",
+						"\tconst groundsNPlayer = [...grounds, player];",
+						"\t",
 						"\tmoveAndJump(deltaTime);",
 						"",
 						"\tcheckPlayerCollision(",
@@ -269,11 +270,10 @@
 						"\t\tmovementX",
 						"\t);",
 						"",
-						"\trestrictBoxesAboveGround(boxes, grounds);",
+						"\trestrictBoxesAboveGround(boxes, groundsNPlayer);",
 						"",
 						"\tcheckLevelTransition(player);",
-						"});",
-						""
+						"});"
 					]
 				}
 			],
