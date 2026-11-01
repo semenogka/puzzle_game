@@ -55,12 +55,14 @@
 			"Player",
 			"Ground",
 			"Текст",
-			"images",
-			"Текст2",
+			"Door",
+			"Percent",
 			"Box",
 			"Мышь",
 			"Спрайт",
-			"рамкаКвадрата"
+			"Dot",
+			"Frame",
+			"DottedLine"
 		],
 		"subfolders": []
 	},
