@@ -20,15 +20,6 @@
 					"tags": "",
 					"instanceVariables": {},
 					"behaviors": {},
-					"effects": {
-						"Штриховка": {
-							"isEnabled": true,
-							"parameters": {
-								"spacing": 0.03,
-								"line-width": 0.003
-							}
-						}
-					},
 					"materialSurfaceType": "smooth",
 					"showing": true,
 					"locked": false,

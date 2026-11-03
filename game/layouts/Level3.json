@@ -20,15 +20,6 @@
 					"tags": "",
 					"instanceVariables": {},
 					"behaviors": {},
-					"effects": {
-						"Штриховка": {
-							"isEnabled": true,
-							"parameters": {
-								"spacing": 0.03,
-								"line-width": 0.003
-							}
-						}
-					},
 					"materialSurfaceType": "smooth",
 					"showing": true,
 					"locked": false,
@@ -220,7 +211,7 @@
 				{
 					"type": "Percent",
 					"properties": {
-						"text": "Крансый клик?",
+						"text": "Красный клик?",
 						"enable-bbcode": true,
 						"font": "Correction Brush",
 						"size": 24,
@@ -318,7 +309,7 @@
 						"Перетаскивание": {
 							"properties": {
 								"axes": "both",
-								"enabled": false
+								"enabled": true
 							}
 						},
 						"Твёрдый": {
@@ -381,8 +372,8 @@
 					"showing": true,
 					"locked": false,
 					"world": {
-						"x": 664.5,
-						"y": 328.5,
+						"x": 672,
+						"y": 345,
 						"width": 289,
 						"height": 69,
 						"originX": 0.5,
@@ -433,6 +424,82 @@
 						"y": 214.5,
 						"width": 118,
 						"height": 26,
+						"originX": 0.5,
+						"originY": 0.5,
+						"color": [
+							1,
+							1,
+							1,
+							1
+						],
+						"z": 0,
+						"angle": 0
+					}
+				},
+				{
+					"type": "Ground",
+					"properties": {
+						"initially-visible": true,
+						"initial-animation": "Animation 1",
+						"initial-frame": 0,
+						"enable-collisions": true,
+						"live-preview": false
+					},
+					"uid": 39,
+					"sid": 677021952060484,
+					"tags": "",
+					"instanceVariables": {},
+					"behaviors": {
+						"Твёрдый": {
+							"properties": {
+								"enabled": true,
+								"use-instance-tags": true,
+								"tags": ""
+							}
+						}
+					},
+					"materialSurfaceType": "smooth",
+					"showing": true,
+					"locked": false,
+					"world": {
+						"x": 946.5,
+						"y": -274,
+						"width": 1776,
+						"height": 539,
+						"originX": 0.5,
+						"originY": 0.5,
+						"color": [
+							1,
+							1,
+							1,
+							1
+						],
+						"z": 0,
+						"angle": 0
+					}
+				},
+				{
+					"type": "DottedLine",
+					"properties": {
+						"initially-visible": true,
+						"initial-animation": "Default",
+						"initial-frame": 0,
+						"enable-collisions": true,
+						"live-preview": false
+					},
+					"uid": 40,
+					"sid": 461729597446365,
+					"tags": "",
+					"instanceVariables": {},
+					"behaviors": {},
+					"materialSurfaceType": "smooth",
+					"showing": true,
+					"locked": false,
+					"world": {
+						"x": 940.5,
+						"y": 1061,
+						"width": 998.9999999999999,
+						"height": 96,
 						"originX": 0.5,
 						"originY": 0.5,
 						"color": [

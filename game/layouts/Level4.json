@@ -20,15 +20,6 @@
 					"tags": "",
 					"instanceVariables": {},
 					"behaviors": {},
-					"effects": {
-						"Штриховка": {
-							"isEnabled": true,
-							"parameters": {
-								"spacing": 0.03,
-								"line-width": 0.003
-							}
-						}
-					},
 					"materialSurfaceType": "smooth",
 					"showing": true,
 					"locked": false,
@@ -832,7 +823,7 @@
 						"Перетаскивание": {
 							"properties": {
 								"axes": "both",
-								"enabled": false
+								"enabled": true
 							}
 						},
 						"Твёрдый": {
@@ -880,7 +871,7 @@
 						"Перетаскивание": {
 							"properties": {
 								"axes": "both",
-								"enabled": false
+								"enabled": true
 							}
 						},
 						"Твёрдый": {
@@ -928,7 +919,7 @@
 						"Перетаскивание": {
 							"properties": {
 								"axes": "both",
-								"enabled": false
+								"enabled": true
 							}
 						},
 						"Твёрдый": {
@@ -976,7 +967,7 @@
 						"Перетаскивание": {
 							"properties": {
 								"axes": "both",
-								"enabled": false
+								"enabled": true
 							}
 						},
 						"Твёрдый": {
@@ -1034,9 +1025,9 @@
 					"locked": false,
 					"world": {
 						"x": 947,
-						"y": 2026,
+						"y": 2064.5,
 						"width": 1021,
-						"height": 1559,
+						"height": 1482,
 						"originX": 0.5,
 						"originY": 0.5,
 						"color": [

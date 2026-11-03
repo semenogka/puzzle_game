@@ -40,13 +40,6 @@
 			"name": "Твёрдый",
 			"author": "Scirra",
 			"bundled": false
-		},
-		{
-			"type": "effect",
-			"id": "crosshatch",
-			"name": "Штриховка",
-			"author": "Brad Larson",
-			"bundled": false
 		}
 	],
 	"uniqueId": "074huz8r6g1",
@@ -67,7 +60,8 @@
 			"labirint",
 			"Текст2",
 			"Box2",
-			"FakeDoor"
+			"FakeDoor",
+			"Текст3"
 		],
 		"subfolders": []
 	},
@@ -94,14 +88,54 @@
 			"Список событий 2",
 			"Список событий 3",
 			"Список событий 4",
-			"говно на память",
 			"Список событий 5"
 		],
 		"subfolders": []
 	},
 	"rootFileFolders": {
 		"script": {
-			"items": [],
+			"items": [
+				{
+					"name": "BoxManager.js",
+					"type": "application/javascript",
+					"sid": 531160606553952,
+					"script-info": {
+						"purpose": "none"
+					}
+				},
+				{
+					"name": "PlayerManager.js",
+					"type": "application/javascript",
+					"sid": 898313400808332,
+					"script-info": {
+						"purpose": "none"
+					}
+				},
+				{
+					"name": "Main.js",
+					"type": "application/javascript",
+					"sid": 788853382882095,
+					"script-info": {
+						"purpose": "main"
+					}
+				},
+				{
+					"name": "FrameManager.js",
+					"type": "application/javascript",
+					"sid": 398622695013050,
+					"script-info": {
+						"purpose": "none"
+					}
+				},
+				{
+					"name": "FakeBoxManager.js",
+					"type": "application/javascript",
+					"sid": 259396435200657,
+					"script-info": {
+						"purpose": "none"
+					}
+				}
+			],
 			"subfolders": []
 		},
 		"sound": {
