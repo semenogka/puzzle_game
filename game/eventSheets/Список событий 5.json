@@ -39,7 +39,7 @@
 						"let levelChanging = false;",
 						"",
 						"const nextLevels = {",
-						"\t\"Level5\": \"Level1\"",
+						"\t\"Level5\": \"Level6\"",
 						"};",
 						"",
 						"fakeBoxManager.initialize(runtime);",

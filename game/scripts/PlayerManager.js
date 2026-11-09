@@ -1,181 +1,173 @@
-
 globalThis.PlayerManager = {
-	keys: new Set(),
+    keys: new Set(),
+    velocityY: 0,
+    velocityX: 0,
+    onGround: false,
 
-	velocityY: 0,
-	onGround: false,
+    speed: 600,
+    acceleration: 4000,
+    friction: 5000,
+    airResistance: 2000,
+    jumpForce: 950,
+    gravity: 2400,
 
-	speed: 600,
-	jumpForce: 1000,
-	gravity: 2000,
+    coyoteTimeDuration: 0.1,
+    coyoteTimer: 0,
+    jumpBufferDuration: 0.12,
+    jumpBufferTimer: 0,
 
-	reset() {
-		this.keys.clear();
-		this.velocityY = 0;
-		this.onGround = false;
-	},
+    reset() {
+        this.keys.clear();
+        this.velocityY = 0;
+        this.velocityX = 0;
+        this.onGround = false;
+        this.coyoteTimer = 0;
+        this.jumpBufferTimer = 0;
+    },
 
-	initialize(runtime) {
-		this.keys.clear();
+    initialize(runtime) {
+        this.keys.clear();
+        runtime.addEventListener("keydown", e => {
+            this.keys.add(e.code.toLowerCase());
+            this.keys.add(e.key.toLowerCase());
+        });
+        runtime.addEventListener("keyup", e => {
+            this.keys.delete(e.code.toLowerCase());
+            this.keys.delete(e.key.toLowerCase());
+        });
+        runtime.addEventListener("layoutstart", () => {
+            this.reset();
+        });
+    },
 
-		runtime.addEventListener("keydown", e => {
-			this.keys.add(e.code.toLowerCase());
-			this.keys.add(e.key.toLowerCase());
-		});
+    updateHorizontalVelocity(deltaTime) {
+        let velocityX = 0;
 
-		runtime.addEventListener("keyup", e => {
-			this.keys.delete(e.code.toLowerCase());
-			this.keys.delete(e.key.toLowerCase());
-		});
+        if (this.keys.has("keya") || this.keys.has("arrowleft")) {
+            velocityX -= this.speed;
+        }
+        if (this.keys.has("keyd") || this.keys.has("arrowright")) {
+            velocityX += this.speed;
+        }
 
-		runtime.addEventListener("layoutstart", () => {
-			this.reset();
-		});
-	},
+        const currentFriction = velocityX === 0 
+            ? (this.onGround ? this.friction : this.airResistance) 
+            : this.acceleration;
 
-	getMovementX(deltaTime) {
-		let movementX = 0;
+        if (this.velocityX < velocityX) {
+            this.velocityX = Math.min(this.velocityX + currentFriction * deltaTime, velocityX);
+        } else if (this.velocityX > velocityX) {
+            this.velocityX = Math.max(this.velocityX - currentFriction * deltaTime, velocityX);
+        }
 
-		if (this.keys.has("keya") || this.keys.has("arrowleft")) {
-			movementX -= this.speed * deltaTime;
-		}
+        return this.velocityX * deltaTime;
+    },
 
-		if (this.keys.has("keyd") || this.keys.has("arrowright")) {
-			movementX += this.speed * deltaTime;
-		}
+    handleJump(player, boxes, solidObstacles, deltaTime) {
+        const jumpPressed = this.keys.has("space") || this.keys.has("keyw") || this.keys.has("arrowup");
 
-		return movementX;
-	},
+        if (this.onGround) {
+            this.coyoteTimer = this.coyoteTimeDuration;
+        } else {
+            this.coyoteTimer = Math.max(0, this.coyoteTimer - deltaTime);
+        }
 
-	handleJump(player, boxes, solidObstacles) {
-		const jumpPressed =
-			this.keys.has("space") ||
-			this.keys.has("keyw") ||
-			this.keys.has("arrowup");
 
-		if (!jumpPressed || !this.onGround) return false;
+        if (jumpPressed && this.coyoteTimer > 0) {
+            const playerBox = player.getBoundingBox();
+            for (const obstacle of solidObstacles) {
+                if (!boxes.includes(obstacle)) continue;
+                
+                const obstacleBox = obstacle.getBoundingBox();
+                const isStanding = playerBox.bottom >= obstacleBox.top - 2 && 
+                                   playerBox.bottom <= obstacleBox.top + 15 && 
+                                   playerBox.right > obstacleBox.left && 
+                                   playerBox.left < obstacleBox.right;
+                
+                if (isStanding) {
+                    globalThis.BoxManager.lockAfterJump(obstacle);
+                    break;
+                }
+            }
+			this.velocityY = -this.jumpForce;
+            this.onGround = false;
+            this.coyoteTimer = 0;
+            return true;
+        }
+        return false;
+    },
 
-		const playerBox = player.getBoundingBox();
+    checkHorizontalCollision(player, solidObstacles, movementX) {
+        if (movementX === 0) return;
+        let playerBox = player.getBoundingBox();
+        
+        for (const obstacle of solidObstacles) {
+            const obstacleBox = obstacle.getBoundingBox();
+            const overlaps = playerBox.right > obstacleBox.left && 
+                             playerBox.left < obstacleBox.right && 
+                             playerBox.bottom > obstacleBox.top && 
+                             playerBox.top < obstacleBox.bottom;
+            
+            if (!overlaps) continue;
 
-		for (const obstacle of solidObstacles) {
-			if (!boxes.includes(obstacle)) continue;
+            if (movementX > 0) {
+                player.x -= (playerBox.right - obstacleBox.left);
+                this.velocityX = 0;
+            } else {
+                player.x += (obstacleBox.right - playerBox.left);
+                this.velocityX = 0;
+            }
+            playerBox = player.getBoundingBox();
+        }
+    },
 
-			const obstacleBox = obstacle.getBoundingBox();
+    checkGroundCollision(player, solidObstacles, boxes, previousBottom) {
+        this.onGround = false;
+        let playerBox = player.getBoundingBox();
+        
+        for (const obstacle of solidObstacles) {
+            const obstacleBox = obstacle.getBoundingBox();
+            const overlaps = playerBox.right > obstacleBox.left && 
+                             playerBox.left < obstacleBox.right && 
+                             playerBox.bottom > obstacleBox.top && 
+                             playerBox.top < obstacleBox.bottom;
+            
+            if (!overlaps) continue;
 
-			const isStanding =
-				playerBox.bottom >= obstacleBox.top - 2 &&
-				playerBox.bottom <= obstacleBox.top + 10 &&
-				playerBox.right > obstacleBox.left &&
-				playerBox.left < obstacleBox.right;
+            if (this.velocityY >= 0 && previousBottom <= obstacleBox.top + 10) {
+                player.y -= (playerBox.bottom - obstacleBox.top);
+                this.velocityY = 0;
+                this.onGround = true;
+                
+                if (boxes.includes(obstacle)) {
+                    const dragBehavior = obstacle.behaviors["Перетаскивание"];
+                    if (dragBehavior) {
+                        dragBehavior.isEnabled = false;
+                    }
+                }
+            } else if (this.velocityY < 0) {
+                player.y += (obstacleBox.bottom - playerBox.top);
+                this.velocityY = 0;
+            }
+            playerBox = player.getBoundingBox();
+        }
+    },
 
-			if (isStanding) {
-                globalThis.BoxManager.lockAfterJump(obstacle);
-				break;
-			}
-		}
+    update(player, grounds, boxes, deltaTime) {
+        const dt = Math.min(deltaTime, 0.1); 
+        const solidObstacles = [...grounds, ...boxes];
 
-		this.velocityY = -this.jumpForce;
-		this.onGround = false;
-	},
+        const movementX = this.updateHorizontalVelocity(dt);
+        player.x += movementX;
+        this.checkHorizontalCollision(player, solidObstacles, movementX);
 
-	checkHorizontalCollision(player, solidObstacles, movementX) {
-		if (movementX === 0) return;
+        const jumpedFromBox = this.handleJump(player, boxes, solidObstacles, dt);
 
-		let playerBox = player.getBoundingBox();
+        this.velocityY += this.gravity * dt;
+        const previousBottom = player.getBoundingBox().bottom;
+        player.y += this.velocityY * dt;
+        this.checkGroundCollision(player, solidObstacles, boxes, previousBottom);
 
-		for (const obstacle of solidObstacles) {
-			const obstacleBox = obstacle.getBoundingBox();
-
-			const overlaps =
-				playerBox.right > obstacleBox.left &&
-				playerBox.left < obstacleBox.right &&
-				playerBox.bottom > obstacleBox.top &&
-				playerBox.top < obstacleBox.bottom;
-
-			if (!overlaps) continue;
-
-			if (movementX > 0) {
-				player.x -= playerBox.right - obstacleBox.left;
-			} else {
-				player.x += obstacleBox.right - playerBox.left;
-			}
-
-			playerBox = player.getBoundingBox();
-		}
-	},
-
-	checkGroundCollision(player, solidObstacles, boxes, previousBottom) {
-		this.onGround = false;
-
-		let playerBox = player.getBoundingBox();
-
-		for (const obstacle of solidObstacles) {
-			const obstacleBox = obstacle.getBoundingBox();
-
-			const overlaps =
-				playerBox.right > obstacleBox.left &&
-				playerBox.left < obstacleBox.right &&
-				playerBox.bottom > obstacleBox.top &&
-				playerBox.top < obstacleBox.bottom;
-
-			if (!overlaps) continue;
-
-			if (this.velocityY >= 0 && previousBottom <= obstacleBox.top + 10) {
-				player.y -= playerBox.bottom - obstacleBox.top;
-				this.velocityY = 0;
-				this.onGround = true;
-
-				if (boxes.includes(obstacle)) {
-					const dragBehavior = obstacle.behaviors["Перетаскивание"];
-
-					if (dragBehavior) {
-						dragBehavior.isEnabled = false;
-					}
-				}
-			} else if (this.velocityY < 0) {
-				player.y += obstacleBox.bottom - playerBox.top;
-				this.velocityY = 0;
-			}
-
-			playerBox = player.getBoundingBox();
-		}
-	},
-
-	update(player, grounds, boxes, deltaTime) {
-		const solidObstacles = [...grounds, ...boxes];
-
-		const movementX = this.getMovementX(deltaTime);
-
-		const jumpedFromBox = this.handleJump(
-			player,
-			boxes,
-			solidObstacles
-		);
-
-		player.x += movementX;
-
-		this.checkHorizontalCollision(
-			player,
-			solidObstacles,
-			movementX
-		);
-
-		this.velocityY += this.gravity * deltaTime;
-
-		const previousBottom = player.getBoundingBox().bottom;
-
-		player.y += this.velocityY * deltaTime;
-
-		this.checkGroundCollision(
-			player,
-			solidObstacles,
-			boxes,
-			previousBottom
-		);
-
-		return {
-			jumpedFromBox,
-			onGround: this.onGround
-		};
-	}
+        return { jumpedFromBox, onGround: this.onGround };
+    }
 };

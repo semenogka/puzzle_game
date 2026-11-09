@@ -1,11 +1,12 @@
 globalThis.BoxManager = {
 	startPositions: new Map(),
 	motions: new Map(),
+	lockedBoxes: new Map(),
 
 	pushDistance: 20,
 	pushDuration: 0.18,
 	returnDuration: 0.4,
-	lockedBoxes: new Map(),
+	
 	jumpLockDuration: 1.5,
 
 	reset() {
@@ -76,14 +77,13 @@ globalThis.BoxManager = {
 		}
 	},
 
-	checkCameraBounds(boxes) {
+	checkCameraBounds(boxes, viewport) {
 		for (const box of boxes) {
 			if (this.motions.has(box)) continue;
 
 			const startPosition = this.startPositions.get(box);
 			if (!startPosition) continue;
 
-			const viewport = box.layer.getViewport();
 			const bounds = box.getBoundingBox();
 
 			const outside =
@@ -153,22 +153,72 @@ globalThis.BoxManager = {
 		}
 	},
 
-	checkDottedLine(boxes, line) {
-		if (!line) return;
+	checkDottedLine(boxes, lines) {
+		for (const line of lines) {
+			if (!line) continue;
+			const angle = line.angle ?? 0;
+			const nx = -Math.sin(angle);
+			const ny = Math.cos(angle);
+			const dx = Math.cos(angle);
+			const dy = Math.sin(angle);
+			const halfLength = line.width / 2;
+			const lineProjection = line.x * nx + line.y * ny;
+			const lineStart = -halfLength;
+			const lineEnd = halfLength;
 
-		for (const box of boxes) {
-			if (this.motions.has(box)) continue;
+			for (const box of boxes) {
+				if (this.motions.has(box) || this.lockedBoxes.has(box)) continue;
 
-			const bounds = box.getBoundingBox();
+				const hasDottedTag = box.tags?.includes('dotted') || box.tag === 'dotted' || (typeof box.hasTag === 'function' && box.hasTag('dotted'));
+				
+				if (!hasDottedTag) continue;
 
-			if (bounds.bottom > line.y) {
-				box.y -= bounds.bottom - line.y;
+				this.enableOrDisableDragging(box, true);
+				const bounds = box.getBoundingBox();
+				const startPos = this.startPositions.get(box);
+				if (!startPos) continue;
+
+				const corners = [
+					{ x: bounds.left, y: bounds.top },
+					{ x: bounds.right, y: bounds.top },
+					{ x: bounds.left, y: bounds.bottom },
+					{ x: bounds.right, y: bounds.bottom }
+				];
+
+				const along = corners.map(point => (point.x - line.x) * dx + (point.y - line.y) * dy);
+				const minAlong = Math.min(...along);
+				const maxAlong = Math.max(...along);
+
+				if (maxAlong < lineStart || minAlong > lineEnd) continue;
+
+				const projections = corners.map(point => point.x * nx + point.y * ny);
+				const minProjection = Math.min(...projections);
+				const maxProjection = Math.max(...projections);
+
+				const centerProjection = startPos.x * nx + startPos.y * ny;
+
+				if (centerProjection < lineProjection) {
+					if (maxProjection > lineProjection) {
+						const offset = maxProjection - lineProjection;
+						box.x -= nx * offset;
+						box.y -= ny * offset;
+					}
+				} else {
+					if (minProjection < lineProjection) {
+						const offset = lineProjection - minProjection;
+						box.x += nx * offset;
+						box.y += ny * offset;
+					}
+				}
 			}
 		}
 	},
 
+
+
+
 	enableOrDisableDragging(box, status) {
-		if (this.motions.has(box) || this.lockedBoxes.has(box)) return;
+		if (status && (this.motions.has(box) || this.lockedBoxes.has(box))) return;
 
 		const behavior = box.behaviors["Перетаскивание"];
 
@@ -177,12 +227,15 @@ globalThis.BoxManager = {
 		}
 	},
 
-	lockAfterJump(box) {
+	lockAfterJump(box, duration) {
 		if (!box) return;
-
-		this.lockedBoxes.set(box, this.jumpLockDuration);
-
-		this.enableOrDisableDragging(box, false);
+		const lockTime = duration || this.jumpLockDuration;
+		this.lockedBoxes.set(box, lockTime);
+		
+		const behavior = box.behaviors["Перетаскивание"];
+		if (behavior) {
+			behavior.isEnabled = false;
+		}
 	},
 
 	updateLockedBoxes(deltaTime) {
@@ -191,7 +244,7 @@ globalThis.BoxManager = {
 
 			if (newTime <= 0) {
 				this.lockedBoxes.delete(box);
-
+				
 				if (!this.motions.has(box)) {
 					this.enableOrDisableDragging(box, true);
 				}
@@ -201,12 +254,13 @@ globalThis.BoxManager = {
 		}
 	},
 
-	update(boxes, grounds, player, line, deltaTime) {
+	update(boxes, grounds, player, lines, deltaTime) {
+		const viewport = player.layer.getViewport();
 		this.register(boxes);
 		this.updateLockedBoxes(deltaTime);
 		this.updateMotions(boxes, deltaTime);
-		this.checkCameraBounds(boxes);
-		this.checkDottedLine(boxes, line);
+		this.checkCameraBounds(boxes, viewport);
+		this.checkDottedLine(boxes, lines);
 		this.checkGroundCollisions(boxes, grounds);
 
 		if (player) {

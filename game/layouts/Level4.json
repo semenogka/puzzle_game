@@ -303,7 +303,7 @@
 					},
 					"uid": 33,
 					"sid": 547815815558442,
-					"tags": "",
+					"tags": "dotted",
 					"instanceVariables": {},
 					"behaviors": {
 						"Перетаскивание": {
@@ -315,8 +315,8 @@
 						"Твёрдый": {
 							"properties": {
 								"enabled": true,
-								"use-instance-tags": true,
-								"tags": ""
+								"use-instance-tags": false,
+								"tags": "dotted"
 							}
 						}
 					},
@@ -351,7 +351,7 @@
 					},
 					"uid": 34,
 					"sid": 911318707125906,
-					"tags": "",
+					"tags": "dotted",
 					"instanceVariables": {},
 					"behaviors": {
 						"Перетаскивание": {
@@ -363,8 +363,8 @@
 						"Твёрдый": {
 							"properties": {
 								"enabled": true,
-								"use-instance-tags": true,
-								"tags": ""
+								"use-instance-tags": false,
+								"tags": "dotted"
 							}
 						}
 					},
@@ -372,8 +372,8 @@
 					"showing": true,
 					"locked": false,
 					"world": {
-						"x": 283,
-						"y": 583,
+						"x": 311,
+						"y": 557,
 						"width": 209,
 						"height": 70,
 						"originX": 0.5,
@@ -406,8 +406,8 @@
 					"showing": true,
 					"locked": false,
 					"world": {
-						"x": 910,
-						"y": 459,
+						"x": 908,
+						"y": 456,
 						"width": 388,
 						"height": 342,
 						"originX": 0.5,
@@ -433,7 +433,7 @@
 					},
 					"uid": 36,
 					"sid": 786947784981623,
-					"tags": "",
+					"tags": "dotted",
 					"instanceVariables": {},
 					"behaviors": {
 						"Перетаскивание": {
@@ -445,8 +445,8 @@
 						"Твёрдый": {
 							"properties": {
 								"enabled": true,
-								"use-instance-tags": true,
-								"tags": ""
+								"use-instance-tags": false,
+								"tags": "dotted"
 							}
 						}
 					},
@@ -481,7 +481,7 @@
 					},
 					"uid": 37,
 					"sid": 718890723350724,
-					"tags": "",
+					"tags": "dotted",
 					"instanceVariables": {},
 					"behaviors": {
 						"Перетаскивание": {
@@ -493,8 +493,8 @@
 						"Твёрдый": {
 							"properties": {
 								"enabled": true,
-								"use-instance-tags": true,
-								"tags": ""
+								"use-instance-tags": false,
+								"tags": "dotted"
 							}
 						}
 					},
@@ -529,7 +529,7 @@
 					},
 					"uid": 48,
 					"sid": 456599341079327,
-					"tags": "",
+					"tags": "dotted",
 					"instanceVariables": {},
 					"behaviors": {
 						"Перетаскивание": {
@@ -541,8 +541,8 @@
 						"Твёрдый": {
 							"properties": {
 								"enabled": true,
-								"use-instance-tags": true,
-								"tags": ""
+								"use-instance-tags": false,
+								"tags": "dotted"
 							}
 						}
 					},
@@ -577,7 +577,7 @@
 					},
 					"uid": 50,
 					"sid": 865991948918330,
-					"tags": "",
+					"tags": "dotted",
 					"instanceVariables": {},
 					"behaviors": {
 						"Перетаскивание": {
@@ -589,8 +589,8 @@
 						"Твёрдый": {
 							"properties": {
 								"enabled": true,
-								"use-instance-tags": true,
-								"tags": ""
+								"use-instance-tags": false,
+								"tags": "dotted"
 							}
 						}
 					},
@@ -625,7 +625,7 @@
 					},
 					"uid": 51,
 					"sid": 429060853238188,
-					"tags": "",
+					"tags": "dotted",
 					"instanceVariables": {},
 					"behaviors": {
 						"Перетаскивание": {
@@ -637,8 +637,8 @@
 						"Твёрдый": {
 							"properties": {
 								"enabled": true,
-								"use-instance-tags": true,
-								"tags": ""
+								"use-instance-tags": false,
+								"tags": "dotted"
 							}
 						}
 					},
@@ -673,7 +673,7 @@
 					},
 					"uid": 52,
 					"sid": 856870109182967,
-					"tags": "",
+					"tags": "dotted",
 					"instanceVariables": {},
 					"behaviors": {
 						"Перетаскивание": {
@@ -685,8 +685,8 @@
 						"Твёрдый": {
 							"properties": {
 								"enabled": true,
-								"use-instance-tags": true,
-								"tags": ""
+								"use-instance-tags": false,
+								"tags": "dotted"
 							}
 						}
 					},
@@ -721,7 +721,7 @@
 					},
 					"uid": 53,
 					"sid": 951055359362945,
-					"tags": "",
+					"tags": "dotted",
 					"instanceVariables": {},
 					"behaviors": {
 						"Перетаскивание": {
@@ -733,8 +733,8 @@
 						"Твёрдый": {
 							"properties": {
 								"enabled": true,
-								"use-instance-tags": true,
-								"tags": ""
+								"use-instance-tags": false,
+								"tags": "dotted"
 							}
 						}
 					},
@@ -769,7 +769,7 @@
 					},
 					"uid": 35,
 					"sid": 501789874344989,
-					"tags": "",
+					"tags": "dotted",
 					"instanceVariables": {},
 					"behaviors": {
 						"Перетаскивание": {
@@ -781,8 +781,8 @@
 						"Твёрдый": {
 							"properties": {
 								"enabled": true,
-								"use-instance-tags": true,
-								"tags": ""
+								"use-instance-tags": false,
+								"tags": "dotted"
 							}
 						}
 					},
@@ -817,7 +817,7 @@
 					},
 					"uid": 54,
 					"sid": 385756032936365,
-					"tags": "",
+					"tags": "dotted",
 					"instanceVariables": {},
 					"behaviors": {
 						"Перетаскивание": {
@@ -829,8 +829,8 @@
 						"Твёрдый": {
 							"properties": {
 								"enabled": true,
-								"use-instance-tags": true,
-								"tags": ""
+								"use-instance-tags": false,
+								"tags": "dotted"
 							}
 						}
 					},
@@ -865,7 +865,7 @@
 					},
 					"uid": 55,
 					"sid": 732630621514950,
-					"tags": "",
+					"tags": "dotted",
 					"instanceVariables": {},
 					"behaviors": {
 						"Перетаскивание": {
@@ -877,8 +877,8 @@
 						"Твёрдый": {
 							"properties": {
 								"enabled": true,
-								"use-instance-tags": true,
-								"tags": ""
+								"use-instance-tags": false,
+								"tags": "dotted"
 							}
 						}
 					},
@@ -913,7 +913,7 @@
 					},
 					"uid": 56,
 					"sid": 678856004037264,
-					"tags": "",
+					"tags": "dotted",
 					"instanceVariables": {},
 					"behaviors": {
 						"Перетаскивание": {
@@ -925,8 +925,8 @@
 						"Твёрдый": {
 							"properties": {
 								"enabled": true,
-								"use-instance-tags": true,
-								"tags": ""
+								"use-instance-tags": false,
+								"tags": "dotted"
 							}
 						}
 					},
@@ -961,7 +961,7 @@
 					},
 					"uid": 57,
 					"sid": 356933236809961,
-					"tags": "",
+					"tags": "dotted",
 					"instanceVariables": {},
 					"behaviors": {
 						"Перетаскивание": {
@@ -973,8 +973,8 @@
 						"Твёрдый": {
 							"properties": {
 								"enabled": true,
-								"use-instance-tags": true,
-								"tags": ""
+								"use-instance-tags": false,
+								"tags": "dotted"
 							}
 						}
 					},
@@ -1053,7 +1053,15 @@
 					"sid": 146598084397463,
 					"tags": "",
 					"instanceVariables": {},
-					"behaviors": {},
+					"behaviors": {
+						"Твёрдый": {
+							"properties": {
+								"enabled": true,
+								"use-instance-tags": true,
+								"tags": ""
+							}
+						}
+					},
 					"materialSurfaceType": "smooth",
 					"showing": true,
 					"locked": false,
