@@ -119,7 +119,7 @@ globalThis.FrameManager = {
 			);
 
 			let percentage = data.totalCount > 0
-				? Math.round((filledCount / data.totalCount) * 100) + 7
+				? Math.round((filledCount / data.totalCount) * 100) + 5
 				: 0;
 
 			if (!allBoxesInside || percentage < 100) {

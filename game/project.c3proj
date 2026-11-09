@@ -137,14 +137,6 @@
 					"script-info": {
 						"purpose": "none"
 					}
-				},
-				{
-					"name": "FakeDoorManager.js",
-					"type": "application/javascript",
-					"sid": 569763833917979,
-					"script-info": {
-						"purpose": "none"
-					}
 				}
 			],
 			"subfolders": []
