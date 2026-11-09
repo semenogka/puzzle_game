@@ -61,7 +61,8 @@
 			"Текст2",
 			"Box2",
 			"FakeDoor",
-			"Текст3"
+			"Текст3",
+			"Detect"
 		],
 		"subfolders": []
 	},

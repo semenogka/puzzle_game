@@ -1,5 +1,6 @@
 globalThis.BoxManager = {
 	startPositions: new Map(),
+	previousPositions: new Map(),
 	motions: new Map(),
 	lockedBoxes: new Map(),
 
@@ -7,10 +8,11 @@ globalThis.BoxManager = {
 	pushDuration: 0.18,
 	returnDuration: 0.4,
 	
-	jumpLockDuration: 1.5,
+	jumpLockDuration: 1,
 
 	reset() {
 		this.startPositions.clear();
+		this.previousPositions.clear();
 		this.motions.clear();
 		this.lockedBoxes.clear();
 	},
@@ -19,6 +21,12 @@ globalThis.BoxManager = {
 		for (const box of boxes) {
 			if (!this.startPositions.has(box)) {
 				this.startPositions.set(box, {
+					x: box.x,
+					y: box.y
+				});
+			}
+			if (!this.previousPositions.has(box)) {
+				this.previousPositions.set(box, {
 					x: box.x,
 					y: box.y
 				});
@@ -137,9 +145,38 @@ globalThis.BoxManager = {
 		for (const box of boxes) {
 			if (this.motions.has(box)) continue;
 
-			for (const ground of grounds) {
-				if (this.resolveCollision(box, ground, this.pushDistance)) {
-					break;
+			const prev = this.previousPositions.get(box);
+			if (!prev) continue;
+
+			const dx = box.x - prev.x;
+			const dy = box.y - prev.y;
+			const dist = Math.sqrt(dx * dx + dy * dy);
+
+			const maxStep = 10; 
+			if (dist > maxStep) {
+				const steps = Math.ceil(dist / maxStep);
+				const startX = prev.x;
+				const startY = prev.y;
+				let collided = false;
+
+				for (let i = 1; i <= steps; i++) {
+					const ratio = i / steps;
+					box.x = startX + dx * ratio;
+					box.y = startY + dy * ratio;
+
+					for (const ground of grounds) {
+						if (this.resolveCollision(box, ground, this.pushDistance)) {
+							collided = true;
+							break;
+						}
+					}
+					if (collided) break;
+				}
+			} else {
+				for (const ground of grounds) {
+					if (this.resolveCollision(box, ground, this.pushDistance)) {
+						break;
+					}
 				}
 			}
 		}
@@ -156,66 +193,98 @@ globalThis.BoxManager = {
 	checkDottedLine(boxes, lines) {
 		for (const line of lines) {
 			if (!line) continue;
+
 			const angle = line.angle ?? 0;
 			const nx = -Math.sin(angle);
 			const ny = Math.cos(angle);
 			const dx = Math.cos(angle);
 			const dy = Math.sin(angle);
+
 			const halfLength = line.width / 2;
 			const lineProjection = line.x * nx + line.y * ny;
-			const lineStart = -halfLength;
-			const lineEnd = halfLength;
 
 			for (const box of boxes) {
 				if (this.motions.has(box) || this.lockedBoxes.has(box)) continue;
 
-				const hasDottedTag = box.tags?.includes('dotted') || box.tag === 'dotted' || (typeof box.hasTag === 'function' && box.hasTag('dotted'));
-				
+				const hasDottedTag =
+					box.tags?.includes('dotted') ||
+					box.tag === 'dotted' ||
+					box.hasTag?.('dotted');
+
 				if (!hasDottedTag) continue;
 
-				this.enableOrDisableDragging(box, true);
-				const bounds = box.getBoundingBox();
 				const startPos = this.startPositions.get(box);
-				if (!startPos) continue;
+				const prevPos = this.previousPositions.get(box);
 
-				const corners = [
-					{ x: bounds.left, y: bounds.top },
-					{ x: bounds.right, y: bounds.top },
-					{ x: bounds.left, y: bounds.bottom },
-					{ x: bounds.right, y: bounds.bottom }
-				];
+				if (!startPos || !prevPos) continue;
 
-				const along = corners.map(point => (point.x - line.x) * dx + (point.y - line.y) * dy);
-				const minAlong = Math.min(...along);
-				const maxAlong = Math.max(...along);
+				const dxMove = box.x - prevPos.x;
+				const dyMove = box.y - prevPos.y;
+				const distance = Math.hypot(dxMove, dyMove);
+				const steps = Math.max(1, Math.ceil(distance / 10));
 
-				if (maxAlong < lineStart || minAlong > lineEnd) continue;
+				const originalX = box.x;
+				const originalY = box.y;
 
-				const projections = corners.map(point => point.x * nx + point.y * ny);
-				const minProjection = Math.min(...projections);
-				const maxProjection = Math.max(...projections);
+				for (let i = 1; i <= steps; i++) {
+					const ratio = i / steps;
 
-				const centerProjection = startPos.x * nx + startPos.y * ny;
+					box.x = prevPos.x + dxMove * ratio;
+					box.y = prevPos.y + dyMove * ratio;
 
-				if (centerProjection < lineProjection) {
-					if (maxProjection > lineProjection) {
-						const offset = maxProjection - lineProjection;
-						box.x -= nx * offset;
-						box.y -= ny * offset;
+					const bounds = box.getBoundingBox();
+
+					const corners = [
+						[bounds.left, bounds.top],
+						[bounds.right, bounds.top],
+						[bounds.left, bounds.bottom],
+						[bounds.right, bounds.bottom]
+					];
+
+					let minAlong = Infinity;
+					let maxAlong = -Infinity;
+					let minProjection = Infinity;
+					let maxProjection = -Infinity;
+
+					for (const [x, y] of corners) {
+						const along = (x - line.x) * dx + (y - line.y) * dy;
+						const projection = x * nx + y * ny;
+
+						minAlong = Math.min(minAlong, along);
+						maxAlong = Math.max(maxAlong, along);
+						minProjection = Math.min(minProjection, projection);
+						maxProjection = Math.max(maxProjection, projection);
 					}
-				} else {
-					if (minProjection < lineProjection) {
-						const offset = lineProjection - minProjection;
-						box.x += nx * offset;
-						box.y += ny * offset;
-					}
+
+					const insideLine =
+						maxAlong >= -halfLength &&
+						minAlong <= halfLength;
+
+					const crossedLine =
+						minProjection <= lineProjection &&
+						maxProjection >= lineProjection;
+
+					if (!insideLine || !crossedLine) continue;
+
+					const centerProjection = startPos.x * nx + startPos.y * ny;
+					const direction = centerProjection < lineProjection ? -1 : 1;
+
+					const offset = direction < 0
+						? maxProjection - lineProjection
+						: lineProjection - minProjection;
+
+					box.x += nx * (offset + 1) * direction;
+					box.y += ny * (offset + 1) * direction;
+
+					break;
+				}
+
+				if (box.x !== originalX || box.y !== originalY) {
+					this.enableOrDisableDragging(box, true);
 				}
 			}
 		}
 	},
-
-
-
 
 	enableOrDisableDragging(box, status) {
 		if (status && (this.motions.has(box) || this.lockedBoxes.has(box))) return;
@@ -265,6 +334,10 @@ globalThis.BoxManager = {
 
 		if (player) {
 			this.checkPlayerCollisions(boxes, player);
+		}
+
+		for (const box of boxes) {
+			this.previousPositions.set(box, { x: box.x, y: box.y });
 		}
 	}
 };

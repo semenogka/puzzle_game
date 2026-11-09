@@ -91,48 +91,6 @@
 						"enable-collisions": true,
 						"live-preview": false
 					},
-					"uid": 44,
-					"sid": 759237228435180,
-					"tags": "",
-					"instanceVariables": {},
-					"behaviors": {
-						"Твёрдый": {
-							"properties": {
-								"enabled": true,
-								"use-instance-tags": true,
-								"tags": ""
-							}
-						}
-					},
-					"materialSurfaceType": "smooth",
-					"showing": true,
-					"locked": false,
-					"world": {
-						"x": 1715.5,
-						"y": 1780,
-						"width": 555,
-						"height": 1559,
-						"originX": 0.5,
-						"originY": 0.5,
-						"color": [
-							1,
-							1,
-							1,
-							1
-						],
-						"z": 0,
-						"angle": 0
-					}
-				},
-				{
-					"type": "Ground",
-					"properties": {
-						"initially-visible": true,
-						"initial-animation": "Animation 1",
-						"initial-frame": 0,
-						"enable-collisions": true,
-						"live-preview": false
-					},
 					"uid": 46,
 					"sid": 972655942624984,
 					"tags": "",
@@ -261,7 +219,7 @@
 					},
 					"uid": 61,
 					"sid": 798373776922159,
-					"tags": "fakeGround",
+					"tags": "fakeGround dotted",
 					"instanceVariables": {},
 					"behaviors": {
 						"Перетаскивание": {
@@ -282,10 +240,10 @@
 					"showing": true,
 					"locked": false,
 					"world": {
-						"x": 1932,
-						"y": 506,
+						"x": 1912,
+						"y": 553,
 						"width": 122,
-						"height": 980,
+						"height": 1056,
 						"originX": 0.5,
 						"originY": 0.5,
 						"color": [
@@ -496,8 +454,8 @@
 					"showing": true,
 					"locked": false,
 					"world": {
-						"x": 1650,
-						"y": 157,
+						"x": 1614,
+						"y": 291,
 						"width": 125,
 						"height": 207.00000000000003,
 						"originX": 0.5,
@@ -580,8 +538,8 @@
 					"showing": true,
 					"locked": false,
 					"world": {
-						"x": 1649,
-						"y": 275,
+						"x": 1616,
+						"y": 420,
 						"width": 278,
 						"height": 42,
 						"originX": 0.5,
@@ -607,7 +565,7 @@
 					},
 					"uid": 45,
 					"sid": 585844974023765,
-					"tags": "fakeGround",
+					"tags": "fakeGround dotted",
 					"instanceVariables": {},
 					"behaviors": {
 						"Перетаскивание": {
@@ -645,25 +603,19 @@
 					}
 				},
 				{
-					"type": "Box",
+					"type": "Ground",
 					"properties": {
 						"initially-visible": true,
-						"initial-animation": "Square",
+						"initial-animation": "Animation 1",
 						"initial-frame": 0,
 						"enable-collisions": true,
 						"live-preview": false
 					},
-					"uid": 67,
-					"sid": 975031910472703,
-					"tags": "dotted",
+					"uid": 44,
+					"sid": 933229352851461,
+					"tags": "",
 					"instanceVariables": {},
 					"behaviors": {
-						"Перетаскивание": {
-							"properties": {
-								"axes": "both",
-								"enabled": true
-							}
-						},
 						"Твёрдый": {
 							"properties": {
 								"enabled": true,
@@ -676,10 +628,10 @@
 					"showing": true,
 					"locked": false,
 					"world": {
-						"x": 714,
-						"y": 474,
-						"width": 101,
-						"height": 69,
+						"x": 3194,
+						"y": 870,
+						"width": 121,
+						"height": 1559,
 						"originX": 0.5,
 						"originY": 0.5,
 						"color": [
