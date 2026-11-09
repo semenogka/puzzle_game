@@ -186,7 +186,7 @@ globalThis.BoxManager = {
 		for (const box of boxes) {
 			if (this.motions.has(box)) continue;
 
-			this.resolveCollision(box, player, 2);
+			this.resolveCollision(box, player, 0.01);
 		}
 	},
 
