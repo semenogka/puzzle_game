@@ -1,0 +1,372 @@
+{
+	"projectFormatVersion": 1,
+	"savedWithRelease": 50603,
+	"name": "norm_game",
+	"runtime": "c3",
+	"useWorker": "auto",
+	"bundleAddons": false,
+	"usedAddons": [
+		{
+			"type": "plugin",
+			"id": "Mouse",
+			"name": "Мышь",
+			"author": "Scirra",
+			"bundled": false
+		},
+		{
+			"type": "plugin",
+			"id": "Sprite",
+			"name": "Спрайт",
+			"author": "Scirra",
+			"bundled": false
+		},
+		{
+			"type": "plugin",
+			"id": "Text",
+			"name": "Текст",
+			"author": "Scirra",
+			"bundled": false
+		},
+		{
+			"type": "behavior",
+			"id": "DragnDrop",
+			"name": "Перетаскивание",
+			"author": "Scirra",
+			"bundled": false
+		},
+		{
+			"type": "behavior",
+			"id": "solid",
+			"name": "Твёрдый",
+			"author": "Scirra",
+			"bundled": false
+		}
+	],
+	"uniqueId": "074huz8r6g1",
+	"objectTypes": {
+		"items": [
+			"Player",
+			"Ground",
+			"Текст",
+			"Door",
+			"Percent",
+			"Box",
+			"Мышь",
+			"Спрайт",
+			"Dot",
+			"Frame",
+			"DottedLine",
+			"Fake",
+			"labirint",
+			"Текст2",
+			"Box2",
+			"FakeDoor",
+			"Текст3",
+			"Detect"
+		],
+		"subfolders": []
+	},
+	"functionsName": "Функции",
+	"autosaveData": null,
+	"containers": [],
+	"families": {
+		"items": [],
+		"subfolders": []
+	},
+	"layouts": {
+		"items": [
+			"Level1",
+			"Level2",
+			"Level3",
+			"Level4",
+			"Level5",
+			"Level6"
+		],
+		"subfolders": []
+	},
+	"eventSheets": {
+		"items": [
+			"Список событий 1",
+			"Список событий 2",
+			"Список событий 3",
+			"Список событий 4",
+			"Список событий 5",
+			"Список событий 6"
+		],
+		"subfolders": []
+	},
+	"rootFileFolders": {
+		"script": {
+			"items": [
+				{
+					"name": "BoxManager.js",
+					"type": "application/javascript",
+					"sid": 531160606553952,
+					"script-info": {
+						"purpose": "none"
+					}
+				},
+				{
+					"name": "PlayerManager.js",
+					"type": "application/javascript",
+					"sid": 898313400808332,
+					"script-info": {
+						"purpose": "none"
+					}
+				},
+				{
+					"name": "Main.js",
+					"type": "application/javascript",
+					"sid": 788853382882095,
+					"script-info": {
+						"purpose": "main"
+					}
+				},
+				{
+					"name": "FrameManager.js",
+					"type": "application/javascript",
+					"sid": 398622695013050,
+					"script-info": {
+						"purpose": "none"
+					}
+				},
+				{
+					"name": "FakeBoxManager.js",
+					"type": "application/javascript",
+					"sid": 259396435200657,
+					"script-info": {
+						"purpose": "none"
+					}
+				},
+				{
+					"name": "MusicManager.js",
+					"type": "application/javascript",
+					"sid": 933628642662118,
+					"script-info": {
+						"purpose": "none"
+					}
+				},
+				{
+					"name": "SoundManager.js",
+					"type": "application/javascript",
+					"sid": 186328623074835,
+					"script-info": {
+						"purpose": "none"
+					}
+				}
+			],
+			"subfolders": []
+		},
+		"sound": {
+			"items": [
+				{
+					"name": "frameFills.webm",
+					"type": "audio/webm; codecs=opus",
+					"sid": 100000000000001,
+					"file-info": {
+						"purpose": "none"
+					}
+				},
+				{
+					"name": "jump.webm",
+					"type": "audio/webm; codecs=opus",
+					"sid": 100000000000002,
+					"file-info": {
+						"purpose": "none"
+					}
+				},
+				{
+					"name": "run.webm",
+					"type": "audio/webm; codecs=opus",
+					"sid": 100000000000003,
+					"file-info": {
+						"purpose": "none"
+					}
+				},
+				{
+					"name": "frameFall.webm",
+					"type": "audio/webm; codecs=opus",
+					"sid": 100000000000004,
+					"file-info": {
+						"purpose": "none"
+					}
+				},
+				{
+					"name": "zoomOut.webm",
+					"type": "audio/webm; codecs=opus",
+					"sid": 100000000000005,
+					"file-info": {
+						"purpose": "none"
+					}
+				}
+			],
+			"subfolders": []
+		},
+		"music": {
+			"items": [
+				{
+					"name": "bgm.webm",
+					"type": "audio/webm; codecs=opus",
+					"sid": 340580549454484,
+					"file-info": {
+						"purpose": "none"
+					}
+				}
+			],
+			"subfolders": []
+		},
+		"video": {
+			"items": [],
+			"subfolders": []
+		},
+		"font": {
+			"items": [],
+			"subfolders": []
+		},
+		"icon": {
+			"items": [
+				{
+					"name": "Иконка-16.png",
+					"type": "image/png",
+					"sid": 855103118013359,
+					"icon-info": {
+						"purpose": "app-icon"
+					}
+				},
+				{
+					"name": "Иконка-32.png",
+					"type": "image/png",
+					"sid": 501783696226941,
+					"icon-info": {
+						"purpose": "app-icon"
+					}
+				},
+				{
+					"name": "Иконка-64.png",
+					"type": "image/png",
+					"sid": 149514760479081,
+					"icon-info": {
+						"purpose": "app-icon"
+					}
+				},
+				{
+					"name": "Иконка-128.png",
+					"type": "image/png",
+					"sid": 435761072592677,
+					"icon-info": {
+						"purpose": "app-icon"
+					}
+				},
+				{
+					"name": "Иконка-256.png",
+					"type": "image/png",
+					"sid": 921972284733750,
+					"icon-info": {
+						"purpose": "app-icon"
+					}
+				},
+				{
+					"name": "Иконка-512.png",
+					"type": "image/png",
+					"sid": 485787400365450,
+					"icon-info": {
+						"purpose": "app-icon"
+					}
+				},
+				{
+					"name": "Иконка-загрузки.png",
+					"type": "image/png",
+					"sid": 392126504150766,
+					"icon-info": {
+						"purpose": "loading-logo"
+					}
+				}
+			],
+			"subfolders": []
+		},
+		"general": {
+			"items": [],
+			"subfolders": []
+		}
+	},
+	"timelines": {
+		"items": [
+			"Шкала 1"
+		],
+		"subfolders": [
+			{
+				"items": [],
+				"subfolders": []
+			}
+		]
+	},
+	"flowcharts": {
+		"items": [
+			"Блок-схема 1"
+		],
+		"subfolders": []
+	},
+	"models3d": {
+		"items": [],
+		"subfolders": []
+	},
+	"properties": {
+		"description": "",
+		"version": "1.0.0.0",
+		"autoIncrementVersion": false,
+		"author": "",
+		"authorEmail": "",
+		"authorWebsite": "",
+		"appId": "",
+		"saveLLMContextFile": true,
+		"pixelRounding": false,
+		"fov": 0.7853981633974483,
+		"useLoaderLayout": false,
+		"fullscreenMode": "letterbox-scale",
+		"fullscreenQuality": "high",
+		"viewportFit": "auto",
+		"backgroundColor": [
+			0,
+			0,
+			0,
+			0
+		],
+		"splashColor": [
+			1,
+			1,
+			1,
+			0
+		],
+		"useThemeColor": false,
+		"themeColor": [
+			1,
+			1,
+			1,
+			0
+		],
+		"orientations": "landscape",
+		"webgpu": "auto",
+		"multitexturing": "auto",
+		"gpuPreference": "high-performance",
+		"framerateMode": "vsync",
+		"fixedFramerate": 30,
+		"sampling": "trilinear",
+		"downscaling": "medium",
+		"renderingMode": "auto",
+		"anisotropicFiltering": "auto",
+		"zNear": 10,
+		"zFar": 100000,
+		"maxSpriteSheetSize": 2048,
+		"loaderStyle": "splash",
+		"preloadSounds": true,
+		"uidAllocationMode": "increment",
+		"zAxisScale": "regular",
+		"cordovaiOSScheme": "app",
+		"cordovaAndroidScheme": "https",
+		"exportFileStructure": "folders",
+		"scriptsType": "module"
+	},
+	"viewportWidth": 1920,
+	"viewportHeight": 1080,
+	"firstLayout": null
+}
