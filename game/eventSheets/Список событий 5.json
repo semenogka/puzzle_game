@@ -43,6 +43,8 @@
 						"};",
 						"",
 						"fakeBoxManager.initialize(runtime);",
+						"MusicManager.start(runtime, \"bgm.webm\");",
+						"SoundManager.initialize(runtime);",
 						"",
 						"runtime.addEventListener(\"layoutstart\", () => {",
 						"\tlevelChanging = false;",

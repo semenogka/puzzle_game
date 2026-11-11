@@ -6,6 +6,7 @@ globalThis.FakeBoxManager = {
 
 	reset() {
 		this.keys.clear();
+		globalThis.SoundManager?.stopAll();
 	},
 
 	initialize(runtime) {

@@ -1,18 +1,42 @@
-
 globalThis.FrameManager = {
 	runtime: null,
 	frameData: [],
 	lastLogTime: 0,
 	frameFalling: false,
+	frameLanded: false,
 	frameVelocityY: 0,
 	boxesInFrame: [],
+	lastPercentage: 0,
+	frameDotMarginX: 22,
+	frameDotMarginY: 20,
+	percentTextBaseSize: 24,
+	percentTextMaxSize: 60,
+	cameraShakeDuration: 0.25,
+	cameraShakeScaleAmplitude: 0.04,
+	cameraShakeOffsetMagnitude: 12,
+	cameraShakeTimeLeft: 0,
+	cameraShakeBaseScale: 1,
+	cameraShakeBaseX: 0,
+	cameraShakeBaseY: 0,
 
 	reset() {
+		if (this.cameraShakeTimeLeft > 0 && this.runtime?.layout) {
+			this.runtime.layout.scrollX = this.cameraShakeBaseX;
+			this.runtime.layout.scrollY = this.cameraShakeBaseY;
+			this.runtime.layout.scale = this.cameraShakeBaseScale;
+		}
+
 		this.frameData = [];
 		this.lastLogTime = 0;
 		this.frameFalling = false;
+		this.frameLanded = false;
 		this.frameVelocityY = 0;
 		this.boxesInFrame = [];
+		this.lastPercentage = 0;
+		this.cameraShakeTimeLeft = 0;
+		this.cameraShakeBaseScale = 1;
+		this.cameraShakeBaseX = 0;
+		this.cameraShakeBaseY = 0;
 	},
 
 	initialize(runtime) {
@@ -39,12 +63,14 @@ globalThis.FrameManager = {
 		const frame = this.runtime.objects.Frame.getFirstInstance();
 		if (!frame) return;
 
-		const step = 20;
+		const step = 5;
+		const marginX = this.frameDotMarginX;
+		const marginY = this.frameDotMarginY;
 		const box = frame.getBoundingBox();
 		const dots = [];
 
-		for (let x = box.left + step; x < box.right - step; x += step) {
-			for (let y = box.top + step; y < box.bottom - step; y += step) {
+		for (let x = box.left + marginX; x < box.right - marginX; x += step) {
+			for (let y = box.top + marginY; y < box.bottom - marginY; y += step) {
 				dots.push({ x, y });
 			}
 		}
@@ -89,14 +115,61 @@ globalThis.FrameManager = {
 		return true;
 	},
 
+	updatePercentText(percentTextObject, percentage) {
+		if (!percentTextObject) return;
+
+		const clamped = Math.max(0, Math.min(100, percentage));
+		const size = this.percentTextBaseSize +
+			(this.percentTextMaxSize - this.percentTextBaseSize) * (clamped / 100) * 2;
+
+		percentTextObject.text = Math.round(clamped) + "%";
+		percentTextObject.sizePt = size;
+	},
+
+	startCameraShake() {
+		const layout = this.runtime?.layout;
+		if (!layout) return;
+
+		this.cameraShakeTimeLeft = this.cameraShakeDuration;
+		this.cameraShakeBaseScale = layout.scale;
+		this.cameraShakeBaseX = layout.scrollX;
+		this.cameraShakeBaseY = layout.scrollY;
+	},
+
+	updateCameraShake(deltaTime) {
+		if (this.cameraShakeTimeLeft <= 0) return;
+
+		const layout = this.runtime?.layout;
+		if (!layout) {
+			this.cameraShakeTimeLeft = 0;
+			return;
+		}
+
+		this.cameraShakeTimeLeft = Math.max(0, this.cameraShakeTimeLeft - deltaTime);
+
+		if (this.cameraShakeTimeLeft <= 0) {
+			layout.scrollX = this.cameraShakeBaseX;
+			layout.scrollY = this.cameraShakeBaseY;
+			layout.scale = this.cameraShakeBaseScale;
+			return;
+		}
+
+		const strength = this.cameraShakeTimeLeft / this.cameraShakeDuration;
+		const offsetX = (Math.random() * 2 - 1) * this.cameraShakeOffsetMagnitude * strength;
+		const offsetY = (Math.random() * 2 - 1) * this.cameraShakeOffsetMagnitude * strength;
+
+		layout.scale = this.cameraShakeBaseScale * (1 + this.cameraShakeScaleAmplitude * strength);
+		layout.scrollX = this.cameraShakeBaseX + offsetX;
+		layout.scrollY = this.cameraShakeBaseY + offsetY;
+	},
+
 	checkFrameFilling(boxes) {
 		const percentTextObject = this.runtime.objects.Percent.getFirstInstance();
 		const frame = this.runtime.objects.Frame.getFirstInstance();
 
 		if (this.frameFalling) {
-			if (percentTextObject) {
-				percentTextObject.text = "100%";
-			}
+			this.lastPercentage = 100;
+			this.updatePercentText(percentTextObject, 100);
 			return;
 		}
 
@@ -118,17 +191,23 @@ globalThis.FrameManager = {
 				this.isBoxInsideFrame(box, frame)
 			);
 
-			let percentage = data.totalCount > 0
-				? Math.round((filledCount / data.totalCount) * 100) + 5
+			const fillRatio = data.totalCount > 0
+				? filledCount / data.totalCount
 				: 0;
 
-			if (!allBoxesInside || percentage < 100) {
-				percentage = Math.min(percentage, 99);
+			let percentage = Math.round(fillRatio * 100);
+			percentage = Math.max(0, Math.min(100, percentage));
+
+			if (!allBoxesInside && percentage >= 100) {
+				percentage = 99;
 			}
 
-			if (percentTextObject) {
-				percentTextObject.text = percentage + "%";
+			if (percentage > this.lastPercentage) {
+				globalThis.SoundManager?.play("frameFill");
 			}
+			this.lastPercentage = percentage;
+
+			this.updatePercentText(percentTextObject, percentage);
 
 			const currentTime = this.runtime.gameTime;
 
@@ -138,13 +217,12 @@ globalThis.FrameManager = {
 				}
 			}
 
-			if (percentage >= 100 && allBoxesInside) {
+			if (percentage >= 98 && allBoxesInside) {
 				this.frameFalling = true;
+				this.frameLanded = false;
 				this.boxesInFrame = [...boxes];
-
-				if (percentTextObject) {
-					percentTextObject.text = "100%";
-				}
+				this.updatePercentText(percentTextObject, 100);
+				this.startCameraShake();
 
 				this.boxesInFrame.forEach(box => {
 					const drag = box.behaviors["Перетаскивание"];
@@ -195,6 +273,10 @@ globalThis.FrameManager = {
 
 		if (hitGround) {
 			this.frameVelocityY = 0;
+			if (!this.frameLanded) {
+				this.frameLanded = true;
+				globalThis.SoundManager?.play("frameFall");
+			}
 		}
 	},
 
@@ -215,5 +297,6 @@ globalThis.FrameManager = {
 		this.handleFrameFalling(grounds, deltaTime);
 		this.checkDottedLine(boxes);
 		this.checkFrameFilling(boxes);
+		this.updateCameraShake(deltaTime);
 	}
 };
