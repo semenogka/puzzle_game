@@ -153,6 +153,14 @@
 					"script-info": {
 						"purpose": "none"
 					}
+				},
+				{
+					"name": "TransitionManager.js",
+					"type": "application/javascript",
+					"sid": 777000111222333,
+					"script-info": {
+						"purpose": "none"
+					}
 				}
 			],
 			"subfolders": []
