@@ -2,6 +2,7 @@ globalThis.MusicManager = {
 	runtime: null,
 	audio: null,
 	started: false,
+	loading: false,
 	currentTrack: null,
 	unlockAttached: false,
 	unlockHandler: null,
@@ -20,7 +21,12 @@ globalThis.MusicManager = {
 		if (!this.runtime?.assets) return;
 
 		const track = trackName || this.defaultTrack;
-		if (this.started && this.currentTrack === track && this.audio && !this.audio.paused) {
+		if (this.currentTrack === track && (this.audio || this.loading)) {
+			this.started = true;
+			if (this.audio) {
+				if (options.volume != null) this.audio.volume = options.volume;
+				if (this.audio.paused) this.play();
+			}
 			return;
 		}
 
@@ -30,22 +36,29 @@ globalThis.MusicManager = {
 
 		this.started = true;
 		this.currentTrack = track;
+		this.loading = true;
 		this.attachUnlockListeners();
 
 		try {
-			const url = await this.runtime.assets.getMediaFileUrl(track);
-			const audio = new Audio(url);
-			audio.loop = true;
-			audio.preload = "auto";
+			const url = await Promise.resolve(this.runtime.assets.getMediaFileUrl(track));
+			if (!url || this.currentTrack !== track) return;
+
+			let audio = this.audio;
+			if (!audio) {
+				audio = new Audio(url);
+				audio.loop = true;
+				audio.preload = "auto";
+				audio.addEventListener("error", () => {
+					console.error("MusicManager: failed to load music", track);
+				});
+				this.audio = audio;
+			}
 			audio.volume = options.volume ?? this.volume;
-			audio.addEventListener("error", () => {
-				console.error("MusicManager: failed to load music", track);
-			});
-			this.audio = audio;
-			audio.load();
 			this.play();
 		} catch (error) {
 			console.error("MusicManager: failed to load music", track, error);
+		} finally {
+			this.loading = false;
 		}
 	},
 

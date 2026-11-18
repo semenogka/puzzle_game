@@ -1,6 +1,6 @@
 {
 	"projectFormatVersion": 1,
-	"savedWithRelease": 50603,
+	"savedWithRelease": 50604,
 	"name": "norm_game",
 	"runtime": "c3",
 	"useWorker": "auto",
@@ -80,7 +80,11 @@
 			"Level3",
 			"Level4",
 			"Level5",
-			"Level6"
+			"Level6",
+			"Level7",
+			"Level8",
+			"Level9",
+			"Level10"
 		],
 		"subfolders": []
 	},
@@ -91,7 +95,11 @@
 			"Список событий 3",
 			"Список событий 4",
 			"Список событий 5",
-			"Список событий 6"
+			"Список событий 6",
+			"Список событий 7",
+			"Список событий 8",
+			"Список событий 9",
+			"Список событий 10"
 		],
 		"subfolders": []
 	},
@@ -158,6 +166,22 @@
 					"name": "TransitionManager.js",
 					"type": "application/javascript",
 					"sid": 777000111222333,
+					"script-info": {
+						"purpose": "none"
+					}
+				},
+				{
+					"name": "GravityManager.js",
+					"type": "application/javascript",
+					"sid": 881100000000200,
+					"script-info": {
+						"purpose": "none"
+					}
+				},
+				{
+					"name": "GameOverManager.js",
+					"type": "application/javascript",
+					"sid": 881100000000201,
 					"script-info": {
 						"purpose": "none"
 					}

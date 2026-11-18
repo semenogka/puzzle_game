@@ -15,6 +15,13 @@ globalThis.PlayerManager = {
     jumpBufferTimer: 0,
     lastStandingBox: null,
     maxCollisionIterations: 12,
+    crushed: false,
+    runPlaying: false,
+    inputBound: false,
+    solids: [],
+    joined: [],
+    boundCache: [],
+    boundCount: 0,
 
     reset() {
         this.keys.clear();
@@ -24,22 +31,33 @@ globalThis.PlayerManager = {
         this.coyoteTimer = 0;
         this.jumpBufferTimer = 0;
         this.lastStandingBox = null;
+        this.crushed = false;
+        this.runPlaying = false;
         globalThis.SoundManager?.stopAll();
     },
 
     initialize(runtime) {
-        this.keys.clear();
-        runtime.addEventListener("keydown", e => {
-            this.keys.add(e.code.toLowerCase());
-            this.keys.add(e.key.toLowerCase());
-        });
-        runtime.addEventListener("keyup", e => {
-            this.keys.delete(e.code.toLowerCase());
-            this.keys.delete(e.key.toLowerCase());
-        });
-        runtime.addEventListener("layoutstart", () => {
-            this.reset();
-        });
+        this.runtime = runtime;
+        if (!this.inputBound) {
+            this.inputBound = true;
+            runtime.addEventListener("keydown", (event) => {
+                this.keys.add(event.code.toLowerCase());
+                this.keys.add(event.key.toLowerCase());
+            });
+            runtime.addEventListener("keyup", (event) => {
+                this.keys.delete(event.code.toLowerCase());
+                this.keys.delete(event.key.toLowerCase());
+            });
+            runtime.addEventListener("layoutstart", () => this.reset());
+        }
+        this.reset();
+    },
+
+    gravitySign() {
+        const manager = globalThis.GravityManager;
+        if (!manager || !manager.active || !manager.flipPlayer) return 1;
+        if (!this.runtime || manager.layoutName !== this.runtime.layout?.name) return 1;
+        return manager.playerSign === -1 ? -1 : 1;
     },
 
     updateHorizontalVelocity(deltaTime) {
@@ -60,6 +78,60 @@ globalThis.PlayerManager = {
         }
 
         return this.velocityX * deltaTime;
+    },
+
+    fill(grounds, boxes) {
+        const list = this.solids;
+        let count = 0;
+        if (grounds) {
+            for (let i = 0; i < grounds.length; i++) list[count++] = grounds[i];
+        }
+        if (boxes) {
+            for (let i = 0; i < boxes.length; i++) list[count++] = boxes[i];
+        }
+        for (let i = count; i < list.length; i++) list[i] = null;
+        list.length = count;
+        return list;
+    },
+
+    join(list, extra) {
+        const out = this.joined;
+        let count = 0;
+        if (list) {
+            for (let i = 0; i < list.length; i++) out[count++] = list[i];
+        }
+        if (extra) out[count++] = extra;
+        for (let i = count; i < out.length; i++) out[i] = null;
+        out.length = count;
+        return out;
+    },
+
+    cacheBounds(obstacles) {
+        const cache = this.boundCache;
+        const count = obstacles.length;
+        for (let i = 0; i < count; i++) {
+            const obstacle = obstacles[i];
+            let rect = cache[i];
+            if (!rect) {
+                rect = { left: 0, right: 0, top: 0, bottom: 0, inst: null };
+                cache[i] = rect;
+            }
+            if (!obstacle) {
+                rect.inst = null;
+                continue;
+            }
+            const box = obstacle.getBoundingBox();
+            rect.left = box.left;
+            rect.right = box.right;
+            rect.top = box.top;
+            rect.bottom = box.bottom;
+            rect.inst = obstacle;
+        }
+        for (let i = count; i < this.boundCount; i++) {
+            if (cache[i]) cache[i].inst = null;
+        }
+        this.boundCount = count;
+        return cache;
     },
 
     handleJump(player, boxes, solidObstacles, deltaTime) {
@@ -88,7 +160,7 @@ globalThis.PlayerManager = {
                     break;
                 }
             }
-            this.velocityY = -this.jumpForce;
+            this.velocityY = -this.jumpForce * this.gravitySign();
             this.onGround = false;
             this.coyoteTimer = 0;
             globalThis.SoundManager?.play("jump");
@@ -100,6 +172,9 @@ globalThis.PlayerManager = {
     resolveOverlapPass(player, obstacles, boxes, trackStandingBox) {
         let landed = false;
         let standingBox = null;
+        const sign = this.gravitySign();
+
+        const cached = this.cacheBounds(obstacles);
 
         for (let iteration = 0; iteration < this.maxCollisionIterations; iteration++) {
             const playerBox = player.getBoundingBox();
@@ -108,8 +183,10 @@ globalThis.PlayerManager = {
             let pushDirectionX = 0;
             let pushDirectionY = 0;
 
-            for (const obstacle of obstacles) {
-                const obstacleBox = obstacle.getBoundingBox();
+            for (let i = 0; i < this.boundCount; i++) {
+                const obstacleBox = cached[i];
+                const obstacle = obstacleBox.inst;
+                if (!obstacle) continue;
 
                 const overlapX1 = playerBox.right - obstacleBox.left;
                 const overlapX2 = obstacleBox.right - playerBox.left;
@@ -146,7 +223,7 @@ globalThis.PlayerManager = {
             if (pushDirectionY !== 0) {
                 player.y += pushDirectionY;
 
-                if (pushDirectionY < 0) {
+                if (pushDirectionY * sign < 0) {
                     landed = true;
                     this.velocityY = 0;
 
@@ -160,7 +237,7 @@ globalThis.PlayerManager = {
                             standingBox = null;
                         }
                     }
-                } else if (this.velocityY < 0) {
+                } else if (this.velocityY * sign < 0) {
                     this.velocityY = 0;
                 }
             }
@@ -169,11 +246,11 @@ globalThis.PlayerManager = {
         return { landed, standingBox };
     },
 
-    resolveCollisions(player, grounds, boxes) {
+    resolveCollisions(player, grounds, boxes, solids) {
         this.onGround = false;
         let currentStandingBox = null;
 
-        const solidResult = this.resolveOverlapPass(player, [...grounds, ...boxes], boxes, true);
+        const solidResult = this.resolveOverlapPass(player, solids, boxes, true);
         if (solidResult.landed) {
             this.onGround = true;
             currentStandingBox = solidResult.standingBox;
@@ -191,38 +268,130 @@ globalThis.PlayerManager = {
             }
         }
         this.lastStandingBox = currentStandingBox;
+        if (this.isCrushed(player, grounds, boxes)) {
+            this.crushed = true;
+            this.velocityX = 0;
+            this.velocityY = 0;
+        }
+    },
+
+    canBeDragged(inst) {
+        const behaviors = inst?.behaviors;
+        if (!behaviors) return false;
+        const behavior = behaviors["Перетаскивание"] || behaviors["DragDrop"];
+        if (!behavior) return false;
+        if (behavior.isEnabled === false || behavior.enabled === false) return false;
+        return true;
+    },
+
+    overlapX(a, b) {
+        return Math.min(a.right, b.right) - Math.max(a.left, b.left);
+    },
+
+    isCrushed(player, grounds, boxes) {
+        const playerBox = player.getBoundingBox();
+        const sign = this.gravitySign();
+        const playerWidth = playerBox.right - playerBox.left;
+        const minOverlapX = Math.max(16, playerWidth * 0.45);
+
+        if (this.crushedBy(player, playerBox, grounds, grounds, boxes, sign, minOverlapX)) return true;
+        if (boxes && boxes.length && this.crushedBy(player, playerBox, boxes, grounds, boxes, sign, minOverlapX)) return true;
+        return false;
+    },
+
+    crushedBy(player, playerBox, list, grounds, boxes, sign, minOverlapX) {
+        const crushDepth = 10;
+        for (let i = 0; i < list.length; i++) {
+            const solid = list[i];
+            if (!solid || solid === player || this.canBeDragged(solid)) continue;
+
+            const solidBox = solid.getBoundingBox();
+            if (this.overlapX(playerBox, solidBox) < minOverlapX) continue;
+
+            const solidHeight = solidBox.bottom - solidBox.top;
+            const spansPlayer = solidBox.top < playerBox.top && solidBox.bottom > playerBox.bottom;
+            if (solidHeight > 500 && spansPlayer) continue;
+
+            if (sign > 0) {
+                const coversHead = solidBox.top < playerBox.top && solidBox.bottom > playerBox.top + crushDepth;
+                if (!coversHead) continue;
+            } else {
+                const coversFeet = solidBox.bottom > playerBox.bottom && solidBox.top < playerBox.bottom - crushDepth;
+                if (!coversFeet) continue;
+            }
+
+            if (this.hasCrushSupport(playerBox, grounds, solid, sign)) return true;
+            if (this.hasCrushSupport(playerBox, boxes, solid, sign)) return true;
+        }
+        return false;
+    },
+
+    hasCrushSupport(playerBox, solids, crusher, sign) {
+        if (!solids) return false;
+        for (let i = 0; i < solids.length; i++) {
+            const solid = solids[i];
+            if (!solid || solid === crusher) continue;
+            const solidBox = solid.getBoundingBox();
+            if (this.overlapX(playerBox, solidBox) < 6) continue;
+
+            if (sign > 0) {
+                const gap = playerBox.bottom - solidBox.top;
+                if (gap >= -8 && gap <= 80) return true;
+            } else {
+                const gap = solidBox.bottom - playerBox.top;
+                if (gap >= -8 && gap <= 80) return true;
+            }
+        }
+        return false;
+    },
+
+    wantsRunSound() {
+        return this.onGround && (
+            this.keys.has("keya") ||
+            this.keys.has("arrowleft") ||
+            this.keys.has("keyd") ||
+            this.keys.has("arrowright")
+        );
+    },
+
+    setRunSound(playing) {
+        if (playing === this.runPlaying) return;
+        this.runPlaying = playing;
+        const sound = globalThis.SoundManager;
+        if (!sound) return;
+        if (playing) sound.play("run", { loop: true });
+        else sound.stop("run");
+    },
+
+    blocked() {
+        if (globalThis.GameOverManager?.active) return true;
+        const gravity = globalThis.GravityManager;
+        return !!(gravity?.freezePlayer && gravity.layoutName === this.runtime?.layout?.name);
     },
 
     update(player, grounds, boxes, deltaTime) {
+        if (this.crushed || this.blocked()) {
+            this.velocityX = 0;
+            this.velocityY = 0;
+            this.setRunSound(false);
+            return { jumpedFromBox: false, onGround: false, crushed: this.crushed };
+        }
+
         const dt = Math.min(deltaTime, 0.1);
-        const solidObstacles = [...grounds, ...boxes];
+        const solidObstacles = this.fill(grounds, boxes);
 
         const movementX = this.updateHorizontalVelocity(dt);
         player.x += movementX;
 
         const jumpedFromBox = this.handleJump(player, boxes, solidObstacles, dt);
 
-        this.velocityY += this.gravity * dt;
+        this.velocityY += this.gravity * this.gravitySign() * dt;
         player.y += this.velocityY * dt;
 
-        this.resolveCollisions(player, grounds, boxes);
+        this.resolveCollisions(player, grounds, boxes, solidObstacles);
 
-        const soundManager = globalThis.SoundManager;
-        if (soundManager) {
-            const isMoving = this.onGround && (
-                this.keys.has("keya") ||
-                this.keys.has("arrowleft") ||
-                this.keys.has("keyd") ||
-                this.keys.has("arrowright")
-            );
+        this.setRunSound(!this.crushed && this.wantsRunSound());
 
-            if (isMoving) {
-                soundManager.play("run", { loop: true });
-            } else {
-                soundManager.stop("run");
-            }
-        }
-
-        return { jumpedFromBox, onGround: this.onGround };
+        return { jumpedFromBox, onGround: this.onGround, crushed: this.crushed };
     }
 };

@@ -130,12 +130,13 @@ globalThis.BoxManager = {
 
 		if (overlapX < overlapY) {
 			const direction = box.x < obstacle.x ? -1 : 1;
-			targetX += direction * (overlapX + distance);
+			targetX += direction * (overlapX);
 		} else {
 			const direction = box.y < obstacle.y ? -1 : 1;
-			targetY += direction * (overlapY + distance);
+			targetY += direction * (overlapY);
 		}
-
+		box.x = targetX;
+		box.y = targetY;
 		this.startMotion(box, targetX, targetY, this.pushDuration);
 
 		return true;
@@ -337,7 +338,10 @@ globalThis.BoxManager = {
 		}
 
 		for (const box of boxes) {
-			this.previousPositions.set(box, { x: box.x, y: box.y });
+			const previous = this.previousPositions.get(box);
+			if (!previous) continue;
+			previous.x = box.x;
+			previous.y = box.y;
 		}
 	}
 };

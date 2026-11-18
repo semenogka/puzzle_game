@@ -1,136 +1,193 @@
 globalThis.SoundManager = {
 	runtime: null,
-	sounds: new Map(),
-	active: new Set(),
-	loops: new Map(),
 	masterVolume: 1,
 	defaultVolume: 0.7,
-	soundFiles: {
+	files: {
 		run: "run.webm",
 		jump: "jump.webm",
 		frameFill: "frameFills.webm",
 		frameFall: "frameFall.webm"
 	},
+	bank: new Map(),
+	loops: new Map(),
+	generation: new Map(),
+	pools: new Map(),
 
-	async initialize(runtime, files = {}) {
-		if (this.runtime === runtime && this.sounds.size > 0) return;
+	initialize(runtime, files) {
 		this.runtime = runtime;
-		this.soundFiles = { ...this.soundFiles, ...files };
-		await this.loadAll();
+		if (files) {
+			for (const key in files) this.files[key] = files[key];
+		}
+		if (this.bank.size === 0) this.loadAll();
 	},
 
 	register(name, fileName, volume = this.defaultVolume) {
-		if (!this.sounds.has(name)) {
-			this.sounds.set(name, {
-				fileName,
-				url: null,
-				volume,
-				loaded: false
-			});
-		} else {
-			const sound = this.sounds.get(name);
-			sound.fileName = fileName;
-			sound.volume = volume;
-			sound.loaded = false;
-			sound.url = null;
-		}
+		this.files[name] = fileName;
+		const entry = this.bank.get(name);
+		if (!entry) return;
+		entry.fileName = fileName;
+		entry.volume = volume;
+		entry.url = null;
 	},
 
 	async load(name, fileName = null, volume = null) {
-		if (!this.runtime?.assets) return null;
-		if (!this.sounds.has(name)) {
-			this.register(name, fileName || name, volume ?? this.defaultVolume);
-		}
-
-		const sound = this.sounds.get(name);
-		if (fileName) sound.fileName = fileName;
-		if (volume !== null) sound.volume = volume;
-		if (sound.loaded && sound.url) return sound.url;
-
-		try {
-			sound.url = await this.runtime.assets.getMediaFileUrl(sound.fileName);
-			sound.loaded = true;
-			return sound.url;
-		} catch (error) {
-			console.error("SoundManager: failed to load sound", name, error);
-			return null;
-		}
+		return this.resolve(name, fileName, volume);
 	},
 
-	async loadAll() {
-		await Promise.all(Object.entries(this.soundFiles).map(([name, fileName]) =>
-			this.load(name, fileName)
-		));
+	loadAll() {
+		for (const name of Object.keys(this.files)) this.resolve(name);
+	},
+
+	async resolve(name, fileName = null, volume = null) {
+		if (!this.runtime?.assets) return null;
+
+		let entry = this.bank.get(name);
+		if (!entry) {
+			entry = {
+				fileName: fileName || this.files[name] || `${name}.webm`,
+				volume: volume ?? this.defaultVolume,
+				url: null,
+				pending: null
+			};
+			this.bank.set(name, entry);
+		}
+		if (fileName) entry.fileName = fileName;
+		if (volume !== null) entry.volume = volume;
+		if (entry.url) return entry.url;
+		if (entry.pending) return entry.pending;
+
+		let request;
+		try {
+			request = this.runtime.assets.getMediaFileUrl(entry.fileName);
+		} catch (error) {
+			console.error("SoundManager: failed to load", name, error);
+			return null;
+		}
+
+		// This Construct build returns the URL directly. Promise.resolve covers both that and a real Promise.
+		entry.pending = Promise.resolve(request)
+			.then((url) => {
+				entry.url = url || null;
+				entry.pending = null;
+				return entry.url;
+			})
+			.catch((error) => {
+				entry.pending = null;
+				console.error("SoundManager: failed to load", name, error);
+				return null;
+			});
+		return entry.pending;
 	},
 
 	async play(name, options = {}) {
-		if (!this.sounds.has(name)) {
-			await this.load(name, this.soundFiles[name] || (name + ".webm"));
+		const url = await this.resolve(name, this.files[name] || null, null);
+		if (!url) return null;
+
+		const entry = this.bank.get(name);
+		const volume = (options.volume ?? entry?.volume ?? this.defaultVolume) * this.masterVolume;
+		if (options.loop) return this.startLoop(name, url, volume);
+		return this.startOneShot(name, url, volume);
+	},
+
+	async startLoop(name, url, volume) {
+		let loop = this.loops.get(name);
+		if (!loop) {
+			const audio = new Audio(url);
+			audio.loop = true;
+			audio.preload = "auto";
+			loop = { audio, starting: false };
+			this.loops.set(name, loop);
 		}
 
-		const sound = this.sounds.get(name);
-		if (!sound) return null;
+		loop.audio.loop = true;
+		loop.audio.volume = volume;
+		if (!loop.audio.paused) return loop.audio;
+		if (loop.starting) return loop.audio;
 
-		if (!sound.loaded || !sound.url) {
-			await this.load(name);
-			if (!sound.loaded || !sound.url) return null;
+		const generation = this.generation.get(name) || 0;
+		loop.starting = true;
+		try {
+			await loop.audio.play();
+			if ((this.generation.get(name) || 0) !== generation) {
+				this.halt(loop.audio);
+				return null;
+			}
+			return loop.audio;
+		} catch (error) {
+			if ((this.generation.get(name) || 0) !== generation || error?.name === "AbortError") {
+				return null;
+			}
+			console.error("SoundManager: playback failed", name, error);
+			return null;
+		} finally {
+			if (this.loops.get(name) === loop) loop.starting = false;
 		}
+	},
 
-		const loop = !!options.loop;
-		const volume = (options.volume ?? sound.volume ?? this.defaultVolume) * this.masterVolume;
-
-		if (loop && this.loops.has(name)) {
-			const existing = this.loops.get(name);
-			if (!existing.paused) return existing;
+	shot(name, url) {
+		let pool = this.pools.get(name);
+		if (!pool) {
+			pool = [];
+			this.pools.set(name, pool);
 		}
-
-		const audio = new Audio(sound.url);
-		audio.loop = loop;
+		for (let i = 0; i < pool.length; i++) {
+			const audio = pool[i];
+			if (audio.paused || audio.ended) return audio;
+		}
+		if (pool.length >= 4) return pool[0];
+		const audio = new Audio(url);
 		audio.preload = "auto";
-		audio.volume = volume;
-		audio.addEventListener("error", () => {
-			console.error("SoundManager: failed to play sound", name);
-		});
+		pool.push(audio);
+		return audio;
+	},
 
-		if (loop) {
-			this.loops.set(name, audio);
-		} else {
-			this.active.add(audio);
-			audio.addEventListener("ended", () => {
-				this.active.delete(audio);
-			});
+	async startOneShot(name, url, volume) {
+		const audio = this.shot(name, url);
+		audio.volume = volume;
+		try {
+			audio.currentTime = 0;
+		} catch (error) {
+			// Seeking can fail before the first jump sound has metadata.
 		}
 
 		try {
 			await audio.play();
+			return audio;
 		} catch (error) {
-			if (loop) this.loops.delete(name);
-			else this.active.delete(audio);
-			console.error("SoundManager: playback blocked", name, error);
+			if (error?.name === "AbortError") return null;
+			console.error("SoundManager: playback failed", name, error);
+			return null;
 		}
+	},
 
-		return audio;
+	halt(audio) {
+		if (!audio) return;
+		audio.loop = false;
+		try {
+			audio.pause();
+		} catch (error) {
+			// The element can already be stopping.
+		}
+		try {
+			audio.currentTime = 0;
+		} catch (error) {
+			// Some browsers reject seeking before metadata loads.
+		}
 	},
 
 	stop(name) {
-		const audio = this.loops.get(name);
-		if (!audio) return;
-		audio.pause();
-		audio.currentTime = 0;
-		this.loops.delete(name);
+		this.generation.set(name, (this.generation.get(name) || 0) + 1);
+		const loop = this.loops.get(name);
+		if (!loop) return;
+		loop.starting = false;
+		this.halt(loop.audio);
 	},
 
 	stopAll() {
-		for (const audio of this.loops.values()) {
-			audio.pause();
-			audio.currentTime = 0;
+		for (const name of this.loops.keys()) this.stop(name);
+		for (const pool of this.pools.values()) {
+			for (let i = 0; i < pool.length; i++) this.halt(pool[i]);
 		}
-		this.loops.clear();
-		for (const audio of this.active) {
-			audio.pause();
-			audio.currentTime = 0;
-		}
-		this.active.clear();
 	},
 
 	setVolume(name, volume) {
@@ -138,8 +195,10 @@ globalThis.SoundManager = {
 			this.masterVolume = volume;
 			return;
 		}
-		const sound = this.sounds.get(name);
-		if (sound) sound.volume = volume;
+		const entry = this.bank.get(name);
+		if (entry) entry.volume = volume;
+		const loop = this.loops.get(name);
+		if (loop) loop.audio.volume = volume * this.masterVolume;
 	},
 
 	setMasterVolume(volume) {

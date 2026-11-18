@@ -7,40 +7,6 @@
 			"subLayers": [],
 			"instances": [
 				{
-					"type": "Player",
-					"properties": {
-						"initially-visible": true,
-						"initial-animation": "Animation 1",
-						"initial-frame": 0,
-						"enable-collisions": true,
-						"live-preview": false
-					},
-					"uid": 42,
-					"sid": 900679637442829,
-					"tags": "",
-					"instanceVariables": {},
-					"behaviors": {},
-					"materialSurfaceType": "smooth",
-					"showing": true,
-					"locked": false,
-					"world": {
-						"x": 146,
-						"y": 949,
-						"width": 63,
-						"height": 73,
-						"originX": 0.5,
-						"originY": 0.5,
-						"color": [
-							1,
-							1,
-							1,
-							1
-						],
-						"z": 0,
-						"angle": 0
-					}
-				},
-				{
 					"type": "Ground",
 					"properties": {
 						"initially-visible": true,
@@ -127,10 +93,10 @@
 				{
 					"type": "Percent",
 					"properties": {
-						"text": "Красный клик?",
+						"text": "дверь - это ложь",
 						"enable-bbcode": true,
 						"font": "Correction Brush",
-						"size": 24,
+						"size": 30,
 						"line-height": 0,
 						"bold": false,
 						"italic": false,
@@ -160,8 +126,8 @@
 					"world": {
 						"x": 811,
 						"y": 239,
-						"width": 335,
-						"height": 103,
+						"width": 338,
+						"height": 106,
 						"originX": 0,
 						"originY": 0,
 						"color": [
@@ -674,6 +640,40 @@
 						"y": -82,
 						"width": 1499,
 						"height": 162,
+						"originX": 0.5,
+						"originY": 0.5,
+						"color": [
+							1,
+							1,
+							1,
+							1
+						],
+						"z": 0,
+						"angle": 0
+					}
+				},
+				{
+					"type": "Player",
+					"properties": {
+						"initially-visible": true,
+						"initial-animation": "Animation 1",
+						"initial-frame": 0,
+						"enable-collisions": true,
+						"live-preview": false
+					},
+					"uid": 42,
+					"sid": 900679637442829,
+					"tags": "",
+					"instanceVariables": {},
+					"behaviors": {},
+					"materialSurfaceType": "smooth",
+					"showing": true,
+					"locked": false,
+					"world": {
+						"x": 146,
+						"y": 949,
+						"width": 63,
+						"height": 73,
 						"originX": 0.5,
 						"originY": 0.5,
 						"color": [
