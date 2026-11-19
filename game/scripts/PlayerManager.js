@@ -16,7 +16,10 @@ globalThis.PlayerManager = {
     lastStandingBox: null,
     maxCollisionIterations: 12,
     crushed: false,
+    crusherList: [],
     runPlaying: false,
+    stepTimer: 0,
+    trailTimer: 0,
     inputBound: false,
     solids: [],
     joined: [],
@@ -33,6 +36,8 @@ globalThis.PlayerManager = {
         this.lastStandingBox = null;
         this.crushed = false;
         this.runPlaying = false;
+        this.stepTimer = 0;
+        this.trailTimer = 0;
         globalThis.SoundManager?.stopAll();
     },
 
@@ -120,7 +125,7 @@ globalThis.PlayerManager = {
                 rect.inst = null;
                 continue;
             }
-            const box = obstacle.getBoundingBox();
+            const box = this.normalized(obstacle.getBoundingBox());
             rect.left = box.left;
             rect.right = box.right;
             rect.top = box.top;
@@ -164,9 +169,71 @@ globalThis.PlayerManager = {
             this.onGround = false;
             this.coyoteTimer = 0;
             globalThis.SoundManager?.play("jump");
+            globalThis.EffectManager?.jump(this.runtime, player);
             return true;
         }
         return false;
+    },
+
+    normalized(box) {
+        let left = box.left;
+        let right = box.right;
+        let top = box.top;
+        let bottom = box.bottom;
+        if (right < left) {
+            const swap = left;
+            left = right;
+            right = swap;
+        }
+        if (bottom < top) {
+            const swap = top;
+            top = bottom;
+            bottom = swap;
+        }
+        return { left, right, top, bottom };
+    },
+
+    // The sprite turns 180 degrees with gravity. Its collision polygon turns with
+    // it and the engine box can come back inverted or paper-thin, so the player
+    // no longer overlaps the walls. The instance size does not rotate.
+    actorBox(player) {
+        const width = Math.abs(player.width || 0);
+        const height = Math.abs(player.height || 0);
+        if (width < 1 || height < 1) return this.normalized(player.getBoundingBox());
+        return {
+            left: player.x - width / 2,
+            right: player.x + width / 2,
+            top: player.y - height / 2,
+            bottom: player.y + height / 2
+        };
+    },
+
+    separation(playerBox, obstacleBox) {
+        const overlapX1 = playerBox.right - obstacleBox.left;
+        const overlapX2 = obstacleBox.right - playerBox.left;
+        const overlapY1 = playerBox.bottom - obstacleBox.top;
+        const overlapY2 = obstacleBox.bottom - playerBox.top;
+        if (overlapX1 <= 0 || overlapX2 <= 0 || overlapY1 <= 0 || overlapY2 <= 0) return null;
+
+        const overlapX = Math.min(overlapX1, overlapX2);
+        const overlapY = Math.min(overlapY1, overlapY2);
+        const obstacleWidth = obstacleBox.right - obstacleBox.left;
+        const obstacleHeight = obstacleBox.bottom - obstacleBox.top;
+        const coversBody = obstacleBox.top <= playerBox.top + 1 && obstacleBox.bottom >= playerBox.bottom - 1;
+        const pillar = coversBody && obstacleHeight >= obstacleWidth;
+        const axis = pillar || overlapX < overlapY ? "x" : "y";
+        if (axis === "x") {
+            return {
+                axis,
+                pen: overlapX,
+                push: overlapX1 < overlapX2 ? -overlapX1 : overlapX2
+            };
+        }
+        return {
+            axis,
+            pen: overlapY,
+            push: overlapY1 < overlapY2 ? -overlapY1 : overlapY2
+        };
     },
 
     resolveOverlapPass(player, obstacles, boxes, trackStandingBox) {
@@ -177,7 +244,7 @@ globalThis.PlayerManager = {
         const cached = this.cacheBounds(obstacles);
 
         for (let iteration = 0; iteration < this.maxCollisionIterations; iteration++) {
-            const playerBox = player.getBoundingBox();
+            const playerBox = this.actorBox(player);
             let deepestObstacle = null;
             let minOverlap = Infinity;
             let pushDirectionX = 0;
@@ -187,30 +254,12 @@ globalThis.PlayerManager = {
                 const obstacleBox = cached[i];
                 const obstacle = obstacleBox.inst;
                 if (!obstacle) continue;
-
-                const overlapX1 = playerBox.right - obstacleBox.left;
-                const overlapX2 = obstacleBox.right - playerBox.left;
-                const overlapY1 = playerBox.bottom - obstacleBox.top;
-                const overlapY2 = obstacleBox.bottom - playerBox.top;
-
-                if (overlapX1 <= 0 || overlapX2 <= 0 || overlapY1 <= 0 || overlapY2 <= 0) continue;
-
-                const overlapX = Math.min(overlapX1, overlapX2);
-                const overlapY = Math.min(overlapY1, overlapY2);
-
-                if (overlapX < overlapY) {
-                    if (overlapX < minOverlap) {
-                        minOverlap = overlapX;
-                        deepestObstacle = obstacle;
-                        pushDirectionX = overlapX1 < overlapX2 ? -overlapX1 : overlapX2;
-                        pushDirectionY = 0;
-                    }
-                } else if (overlapY < minOverlap) {
-                    minOverlap = overlapY;
-                    deepestObstacle = obstacle;
-                    pushDirectionX = 0;
-                    pushDirectionY = overlapY1 < overlapY2 ? -overlapY1 : overlapY2;
-                }
+                const hit = this.separation(playerBox, obstacleBox);
+                if (!hit || hit.pen >= minOverlap) continue;
+                minOverlap = hit.pen;
+                deepestObstacle = obstacle;
+                pushDirectionX = hit.axis === "x" ? hit.push : 0;
+                pushDirectionY = hit.axis === "y" ? hit.push : 0;
             }
 
             if (!deepestObstacle) break;
@@ -290,59 +339,100 @@ globalThis.PlayerManager = {
 
     isCrushed(player, grounds, boxes) {
         const playerBox = player.getBoundingBox();
-        const sign = this.gravitySign();
-        const playerWidth = playerBox.right - playerBox.left;
-        const minOverlapX = Math.max(16, playerWidth * 0.45);
+        const height = playerBox.bottom - playerBox.top;
+        const width = playerBox.right - playerBox.left;
+        if (height < 4 || width < 4) return false;
 
-        if (this.crushedBy(player, playerBox, grounds, grounds, boxes, sign, minOverlapX)) return true;
-        if (boxes && boxes.length && this.crushedBy(player, playerBox, boxes, grounds, boxes, sign, minOverlapX)) return true;
+        const minOverlapX = Math.max(16, width * 0.5);
+        const sign = this.gravitySign();
+        const crushers = this.collectCrushers(boxes);
+        if (!crushers.length) return false;
+        if (!this.hasVerticalSupport(playerBox, grounds, crushers, minOverlapX, sign)) return false;
+
+        for (let i = 0; i < crushers.length; i++) {
+            const inst = crushers[i];
+            if (!inst || inst.destroyed || inst === player || this.canBeDragged(inst)) continue;
+            const box = inst.getBoundingBox();
+            if (this.overlapX(playerBox, box) < minOverlapX) continue;
+            if (this.pressesAlongGravity(playerBox, box, width, height, sign)) return true;
+        }
         return false;
     },
 
-    crushedBy(player, playerBox, list, grounds, boxes, sign, minOverlapX) {
-        const crushDepth = 10;
+    collectCrushers(boxes) {
+        const list = this.crusherList;
+        let count = 0;
+        const bodies = globalThis.GravityManager?.bodies;
+        if (bodies) {
+            for (let i = 0; i < bodies.length; i++) {
+                const inst = bodies[i]?.inst;
+                if (inst && !inst.destroyed) list[count++] = inst;
+            }
+        }
+        if (boxes) {
+            for (let i = 0; i < boxes.length; i++) {
+                const inst = boxes[i];
+                if (!inst || inst.destroyed) continue;
+                let seen = false;
+                for (let j = 0; j < count; j++) {
+                    if (list[j] === inst) {
+                        seen = true;
+                        break;
+                    }
+                }
+                if (!seen) list[count++] = inst;
+            }
+        }
+        list.length = count;
+        return list;
+    },
+
+    hasVerticalSupport(playerBox, grounds, crushers, minOverlapX, sign) {
+        if (this.supportIn(playerBox, grounds, minOverlapX, sign)) return true;
+        if (this.supportIn(playerBox, crushers, minOverlapX, sign)) return true;
+        return false;
+    },
+
+    supportIn(playerBox, list, minOverlapX, sign) {
+        if (!list) return false;
         for (let i = 0; i < list.length; i++) {
             const solid = list[i];
-            if (!solid || solid === player || this.canBeDragged(solid)) continue;
-
-            const solidBox = solid.getBoundingBox();
-            if (this.overlapX(playerBox, solidBox) < minOverlapX) continue;
-
-            const solidHeight = solidBox.bottom - solidBox.top;
-            const spansPlayer = solidBox.top < playerBox.top && solidBox.bottom > playerBox.bottom;
-            if (solidHeight > 500 && spansPlayer) continue;
-
+            if (!solid || solid.destroyed) continue;
+            const box = solid.getBoundingBox();
+            if (this.overlapX(playerBox, box) < minOverlapX) continue;
             if (sign > 0) {
-                const coversHead = solidBox.top < playerBox.top && solidBox.bottom > playerBox.top + crushDepth;
-                if (!coversHead) continue;
+                const gap = playerBox.bottom - box.top;
+                if (gap >= -8 && gap <= 16 && box.bottom > playerBox.bottom - 2) return true;
             } else {
-                const coversFeet = solidBox.bottom > playerBox.bottom && solidBox.top < playerBox.bottom - crushDepth;
-                if (!coversFeet) continue;
+                const gap = box.bottom - playerBox.top;
+                if (gap >= -8 && gap <= 16 && box.top < playerBox.top + 2) return true;
             }
-
-            if (this.hasCrushSupport(playerBox, grounds, solid, sign)) return true;
-            if (this.hasCrushSupport(playerBox, boxes, solid, sign)) return true;
         }
         return false;
     },
 
-    hasCrushSupport(playerBox, solids, crusher, sign) {
-        if (!solids) return false;
-        for (let i = 0; i < solids.length; i++) {
-            const solid = solids[i];
-            if (!solid || solid === crusher) continue;
-            const solidBox = solid.getBoundingBox();
-            if (this.overlapX(playerBox, solidBox) < 6) continue;
-
-            if (sign > 0) {
-                const gap = playerBox.bottom - solidBox.top;
-                if (gap >= -8 && gap <= 80) return true;
-            } else {
-                const gap = solidBox.bottom - playerBox.top;
-                if (gap >= -8 && gap <= 80) return true;
-            }
+    pressesAlongGravity(playerBox, box, width, height, sign) {
+        const overlapY = Math.min(playerBox.bottom, box.bottom) - Math.max(playerBox.top, box.top);
+        if (overlapY < -2) return false;
+        if (this.sideBump(playerBox, box, width, overlapY)) return false;
+        if (sign > 0) {
+            if (box.bottom < playerBox.top - 2) return false;
+            if (box.top > playerBox.top + height * 0.35) return false;
+            return true;
         }
-        return false;
+        if (box.top > playerBox.bottom + 2) return false;
+        if (box.bottom < playerBox.bottom - height * 0.35) return false;
+        return true;
+    },
+
+    sideBump(playerBox, box, width, overlapY) {
+        const overlapX = this.overlapX(playerBox, box);
+        if (overlapX <= 0) return true;
+        if (overlapX >= width * 0.8) return false;
+        const center = (box.left + box.right) / 2;
+        const overPlayer = center > playerBox.left + width * 0.15 && center < playerBox.right - width * 0.15;
+        if (!overPlayer) return true;
+        return overlapX < overlapY;
     },
 
     wantsRunSound() {
@@ -378,9 +468,12 @@ globalThis.PlayerManager = {
         }
 
         const dt = Math.min(deltaTime, 0.1);
+        const wasOnGround = this.onGround;
+        const fallSpeed = this.velocityY;
         const solidObstacles = this.fill(grounds, boxes);
 
         const movementX = this.updateHorizontalVelocity(dt);
+        globalThis.GravityManager?.shoveBoxes(player, movementX);
         player.x += movementX;
 
         const jumpedFromBox = this.handleJump(player, boxes, solidObstacles, dt);
@@ -390,7 +483,26 @@ globalThis.PlayerManager = {
 
         this.resolveCollisions(player, grounds, boxes, solidObstacles);
 
-        this.setRunSound(!this.crushed && this.wantsRunSound());
+        if (!this.crushed && !wasOnGround && this.onGround && Math.abs(fallSpeed) > 260) {
+            globalThis.EffectManager?.land(this.runtime, player);
+        }
+
+        const running = !this.crushed && this.wantsRunSound();
+        this.setRunSound(running);
+        if (running) {
+            this.stepTimer -= dt;
+            if (this.stepTimer <= 0) {
+                this.stepTimer = 0.16;
+                globalThis.EffectManager?.step(this.runtime, player);
+            }
+        }
+        if (!this.crushed && !this.onGround && Math.abs(this.velocityY) > 140) {
+            this.trailTimer -= dt;
+            if (this.trailTimer <= 0) {
+                this.trailTimer = 0.05;
+                globalThis.EffectManager?.trail(this.runtime, player);
+            }
+        }
 
         return { jumpedFromBox, onGround: this.onGround, crushed: this.crushed };
     }

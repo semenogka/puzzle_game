@@ -7,6 +7,11 @@ import "./SoundManager.js";
 import "./TransitionManager.js";
 import "./GravityManager.js";
 import "./GameOverManager.js";
+import "./FallManager.js";
+import "./EffectManager.js";
+import "./SpikeManager.js";
+import "./ButtonManager.js";
+import "./PuzzleManager.js";
 
 globalThis.RuntimeLoop = {
 	tick: null,
@@ -31,11 +36,16 @@ runOnStartup(runtime => {
 		globalThis.SoundManager.initialize(runtime);
 		globalThis.GameOverManager.initialize(runtime);
 		globalThis.TransitionManager.bind(runtime);
+		globalThis.EffectManager.bind(runtime);
 		globalThis.RuntimeLoop.bind(runtime);
 
 		runtime.addEventListener("beforelayoutstart", () => {
 			globalThis.RuntimeLoop.tick = null;
 			globalThis.GravityManager.release();
+			globalThis.EffectManager.release();
+			globalThis.SpikeManager.release();
+			globalThis.ButtonManager.release();
+			globalThis.PuzzleManager.release();
 			globalThis.BoxManager.reset();
 			globalThis.FakeBoxManager.reset();
 		});

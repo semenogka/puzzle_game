@@ -27,6 +27,7 @@ globalThis.GravityManager = {
 	animDuration: 0.42,
 	shake: null,
 	tickBound: false,
+	pushBoxes: false,
 
 	easeIn(t) {
 		const x = Math.min(1, Math.max(0, t));
@@ -49,6 +50,7 @@ globalThis.GravityManager = {
 		this.flipPlayer = !!options.flipPlayer;
 		this.objectTag = options.objectTag || null;
 		this.objectGravity = options.objectGravity || 1400;
+		this.pushBoxes = !!options.pushBoxes;
 		this.playerSign = 1;
 		this.playerPending = false;
 		this.playerLeftSurface = false;
@@ -63,6 +65,60 @@ globalThis.GravityManager = {
 		this.collectObjects(runtime);
 		this.ensureTick(runtime);
 		this.centerView(runtime);
+	},
+
+	rectsHit(a, b) {
+		const ox = Math.min(a.right, b.right) - Math.max(a.left, b.left);
+		const oy = Math.min(a.bottom, b.bottom) - Math.max(a.top, b.top);
+		if (ox <= 2 || oy <= 2) return false;
+		if (oy < 10 && oy < ox) return false;
+		return true;
+	},
+
+	boxBlocked(box) {
+		const bounds = box.getBoundingBox();
+		const grounds = this.grounds || [];
+		for (let i = 0; i < grounds.length; i++) {
+			const ground = grounds[i];
+			if (!ground || ground === box) continue;
+			if (this.rectsHit(bounds, ground.getBoundingBox())) return true;
+		}
+		for (let i = 0; i < this.bodies.length; i++) {
+			const other = this.bodies[i].inst;
+			if (!other || other === box) continue;
+			if (this.rectsHit(bounds, other.getBoundingBox())) return true;
+		}
+		return false;
+	},
+
+	shoveBoxes(player, movementX) {
+		if (!this.pushBoxes || !this.active || !movementX || !player) return;
+		const dir = movementX > 0 ? 1 : -1;
+		const travel = Math.abs(movementX);
+		const playerBox = player.getBoundingBox();
+		let closest = null;
+		let closestGap = Infinity;
+
+		for (let i = 0; i < this.bodies.length; i++) {
+			const box = this.bodies[i].inst;
+			if (!box) continue;
+			const bounds = box.getBoundingBox();
+			const overlapY = Math.min(playerBox.bottom, bounds.bottom) - Math.max(playerBox.top, bounds.top);
+			if (overlapY < 28) continue;
+			const gap = dir > 0 ? bounds.left - playerBox.right : playerBox.left - bounds.right;
+			if (gap > travel + 1 || gap < -36) continue;
+			if (gap < closestGap) {
+				closestGap = gap;
+				closest = box;
+			}
+		}
+
+		if (!closest) return;
+		const push = travel - Math.max(0, closestGap);
+		if (push <= 0) return;
+		const old = closest.x;
+		closest.x += dir * push;
+		if (this.boxBlocked(closest)) closest.x = old;
 	},
 
 	bind(player) {
@@ -85,6 +141,7 @@ globalThis.GravityManager = {
 		this.freezePlayer = false;
 		this.playerPending = false;
 		this.playerLeftSurface = false;
+		this.pushBoxes = false;
 		this.obstacles.length = 0;
 		this.playerSolids.length = 0;
 		this.solidList.length = 0;
@@ -218,6 +275,7 @@ globalThis.GravityManager = {
 			elapsed: 0,
 			settleUpright: true
 		};
+		globalThis.EffectManager?.flip(this.runtime, inst);
 	},
 
 	flip() {
@@ -250,6 +308,11 @@ globalThis.GravityManager = {
 			body.inst.y += body.sign * 4;
 			this.startAngleAnim(body.inst, body);
 		}
+
+		const effects = globalThis.EffectManager;
+		if (!effects || !this.runtime) return;
+		if (hasPlayer) effects.flip(this.runtime, this.player);
+		for (let i = 0; i < this.bodies.length; i++) effects.lift(this.runtime, this.bodies[i].inst);
 	},
 
 	preUpdate(deltaTime, grounds) {
@@ -312,6 +375,7 @@ globalThis.GravityManager = {
 				body.pending = false;
 				body.leftSurface = false;
 				this.startShake(inst.layer);
+				globalThis.EffectManager?.impact(this.runtime, inst, body.sign);
 			}
 		}
 	},

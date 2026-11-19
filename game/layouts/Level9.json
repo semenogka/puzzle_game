@@ -381,6 +381,54 @@
 						"z": 0,
 						"angle": 0
 					}
+				},
+				{
+					"type": "Box",
+					"properties": {
+						"initially-visible": true,
+						"initial-animation": "SquareBlue",
+						"initial-frame": 0,
+						"enable-collisions": true,
+						"live-preview": false
+					},
+					"uid": 74,
+					"sid": 627199171367260,
+					"tags": "gravity",
+					"instanceVariables": {},
+					"behaviors": {
+						"Перетаскивание": {
+							"properties": {
+								"axes": "both",
+								"enabled": false
+							}
+						},
+						"Твёрдый": {
+							"properties": {
+								"enabled": true,
+								"use-instance-tags": true,
+								"tags": ""
+							}
+						}
+					},
+					"materialSurfaceType": "smooth",
+					"showing": true,
+					"locked": false,
+					"world": {
+						"x": 904,
+						"y": 109,
+						"width": 200,
+						"height": 142,
+						"originX": 0.5,
+						"originY": 0.5,
+						"color": [
+							1,
+							1,
+							1,
+							1
+						],
+						"z": 0,
+						"angle": 3.141592653589793
+					}
 				}
 			],
 			"sid": 882200000000002,

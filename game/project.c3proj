@@ -15,6 +15,13 @@
 		},
 		{
 			"type": "plugin",
+			"id": "SVGPicture",
+			"name": "SVG-изображение",
+			"author": "Scirra",
+			"bundled": false
+		},
+		{
+			"type": "plugin",
 			"id": "Sprite",
 			"name": "Спрайт",
 			"author": "Scirra",
@@ -62,7 +69,25 @@
 			"Box2",
 			"FakeDoor",
 			"Текст3",
-			"Detect"
+			"Detect",
+			"heavyBox",
+			"Текст4",
+			"ы",
+			"groundMove",
+			"ненажатая",
+			"нажатая",
+			"Door2",
+			"Door3",
+			"Door4",
+			"Door0",
+			"целое",
+			"чутьРазбитое",
+			"сильноРазбитое",
+			"Текст5",
+			"smallBox",
+			"what1",
+			"what2",
+			"what3"
 		],
 		"subfolders": []
 	},
@@ -84,7 +109,10 @@
 			"Level7",
 			"Level8",
 			"Level9",
-			"Level10"
+			"Level10",
+			"Level11",
+			"Level12",
+			"Level13"
 		],
 		"subfolders": []
 	},
@@ -99,7 +127,10 @@
 			"Список событий 7",
 			"Список событий 8",
 			"Список событий 9",
-			"Список событий 10"
+			"Список событий 10",
+			"Список событий 11",
+			"Список событий 12",
+			"Список событий 13"
 		],
 		"subfolders": []
 	},
@@ -182,6 +213,46 @@
 					"name": "GameOverManager.js",
 					"type": "application/javascript",
 					"sid": 881100000000201,
+					"script-info": {
+						"purpose": "none"
+					}
+				},
+				{
+					"name": "FallManager.js",
+					"type": "application/javascript",
+					"sid": 296864567963241,
+					"script-info": {
+						"purpose": "none"
+					}
+				},
+				{
+					"name": "PuzzleManager.js",
+					"type": "application/javascript",
+					"sid": 881100000000202,
+					"script-info": {
+						"purpose": "none"
+					}
+				},
+				{
+					"name": "SpikeManager.js",
+					"type": "application/javascript",
+					"sid": 881100000000203,
+					"script-info": {
+						"purpose": "none"
+					}
+				},
+				{
+					"name": "ButtonManager.js",
+					"type": "application/javascript",
+					"sid": 881100000000204,
+					"script-info": {
+						"purpose": "none"
+					}
+				},
+				{
+					"name": "EffectManager.js",
+					"type": "application/javascript",
+					"sid": 881100000000205,
 					"script-info": {
 						"purpose": "none"
 					}
@@ -317,7 +388,16 @@
 			"subfolders": []
 		},
 		"general": {
-			"items": [],
+			"items": [
+				{
+					"name": "ы.svg",
+					"type": "image/svg+xml",
+					"sid": 214538396724982,
+					"file-info": {
+						"purpose": "none"
+					}
+				}
+			],
 			"subfolders": []
 		}
 	},

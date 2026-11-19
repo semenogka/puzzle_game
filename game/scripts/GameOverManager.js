@@ -128,10 +128,18 @@ globalThis.GameOverManager = {
 		const inst = type.createInstance(layer, centerX - width / 2, centerY - height / 2);
 		inst.width = width;
 		inst.height = height;
-		inst.text = text;
 		inst.opacity = 0;
-		if ("fontFace" in inst) inst.fontFace = "Correction Brush";
-		if ("sizePt" in inst) inst.sizePt = size;
+		try {
+			inst.text = text;
+		} catch (error) {
+			// A missing typewriter renderer must not hide the death screen.
+		}
+		try {
+			if ("fontFace" in inst) inst.fontFace = "Correction Brush";
+			if ("sizePt" in inst) inst.sizePt = size;
+		} catch (error) {
+			// The label still shows in the default face.
+		}
 		if ("horizontalAlign" in inst) inst.horizontalAlign = "center";
 		if ("verticalAlign" in inst) inst.verticalAlign = "center";
 		if ("fontColor" in inst) inst.fontColor = color;
