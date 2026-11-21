@@ -20,6 +20,7 @@ globalThis.GravityManager = {
 	boundCache: [],
 	boundCount: 0,
 	bodyHit: { landed: false, hitGround: false },
+	supportSeen: new Set(),
 	flipLock: 0,
 	uprighting: false,
 	freezePlayer: false,
@@ -262,7 +263,7 @@ globalThis.GravityManager = {
 		this.freezePlayer = true;
 		this.playerSign = 1;
 		this.playerPending = false;
-		this.flipLock = this.animDuration;
+		this.flipLock = 1;
 		const playerManager = globalThis.PlayerManager;
 		if (playerManager) {
 			playerManager.velocityX = 0;
@@ -278,14 +279,62 @@ globalThis.GravityManager = {
 		globalThis.EffectManager?.flip(this.runtime, inst);
 	},
 
+	readBounds(inst) {
+		const box = inst.getBoundingBox();
+		return { left: box.left, right: box.right, top: box.top, bottom: box.bottom };
+	},
+
+	restingAgainst(mover, support, sign) {
+		const overlapX = Math.min(mover.right, support.right) - Math.max(mover.left, support.left);
+		if (overlapX <= 6) return false;
+		if (sign > 0) {
+			const gap = mover.bottom - support.top;
+			return gap >= -6 && gap <= 12;
+		}
+		const gap = support.bottom - mover.top;
+		return gap >= -6 && gap <= 12;
+	},
+
+	bodySupported(body, seen) {
+		const inst = body.inst;
+		if (!inst) return true;
+		if (seen.has(body)) return false;
+		seen.add(body);
+		const rect = this.readBounds(inst);
+		const grounds = this.grounds || [];
+		for (let i = 0; i < grounds.length; i++) {
+			const ground = grounds[i];
+			if (!ground || ground === inst) continue;
+			if (this.restingAgainst(rect, this.readBounds(ground), body.sign)) return true;
+		}
+		for (let i = 0; i < this.bodies.length; i++) {
+			const other = this.bodies[i];
+			if (!other || other === body || !other.inst) continue;
+			if (!this.restingAgainst(rect, this.readBounds(other.inst), body.sign)) continue;
+			if (this.bodySupported(other, seen)) return true;
+		}
+		return false;
+	},
+
+	canFlip() {
+		if (this.player && globalThis.PlayerManager && !globalThis.PlayerManager.onGround) return false;
+		const seen = this.supportSeen;
+		for (let i = 0; i < this.bodies.length; i++) {
+			seen.clear();
+			if (!this.bodySupported(this.bodies[i], seen)) return false;
+		}
+		return true;
+	},
+
 	flip() {
 		if (this.uprighting || this.freezePlayer || globalThis.GameOverManager?.active) return;
 		if (this.flipLock > 0) return;
+		if (!this.canFlip()) return;
 		const hasPlayer = this.flipPlayer && this.player;
 		const hasBodies = this.bodies.length > 0;
 		if (!hasPlayer && !hasBodies) return;
 
-		this.flipLock = this.animDuration;
+		this.flipLock = 1;
 
 		if (hasPlayer) {
 			this.playerSign *= -1;
@@ -306,7 +355,7 @@ globalThis.GravityManager = {
 			body.leftSurface = false;
 			body.onGround = false;
 			body.inst.y += body.sign * 4;
-			this.startAngleAnim(body.inst, body);
+			// this.startAngleAnim(body.inst, body);
 		}
 
 		const effects = globalThis.EffectManager;
@@ -470,20 +519,12 @@ globalThis.GravityManager = {
 	},
 
 	restingOn(inst, grounds, sign) {
-		if (!inst) return false;
-		const bounds = inst.getBoundingBox();
-		for (const ground of grounds) {
+		if (!inst || !grounds) return false;
+		const bounds = this.readBounds(inst);
+		for (let i = 0; i < grounds.length; i++) {
+			const ground = grounds[i];
 			if (!ground) continue;
-			const obstacle = ground.getBoundingBox();
-			const overlapX = Math.min(bounds.right, obstacle.right) - Math.max(bounds.left, obstacle.left);
-			if (overlapX <= 2) continue;
-			if (sign > 0) {
-				const gap = bounds.bottom - obstacle.top;
-				if (gap >= -8 && gap <= 8) return true;
-			} else {
-				const gap = obstacle.bottom - bounds.top;
-				if (gap >= -8 && gap <= 8) return true;
-			}
+			if (this.restingAgainst(bounds, this.readBounds(ground), sign)) return true;
 		}
 		return false;
 	},

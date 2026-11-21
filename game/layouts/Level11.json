@@ -332,10 +332,10 @@
 					"showing": true,
 					"locked": false,
 					"world": {
-						"x": 400,
-						"y": 770.5,
-						"width": 160,
-						"height": 459,
+						"x": 617,
+						"y": 730.5,
+						"width": 72,
+						"height": 523,
 						"originX": 0.5,
 						"originY": 0.5,
 						"color": [
@@ -502,6 +502,90 @@
 							0.8,
 							0.82,
 							0.88,
+							1
+						],
+						"z": 0,
+						"angle": 0
+					}
+				},
+				{
+					"type": "Ground",
+					"properties": {
+						"initially-visible": true,
+						"initial-animation": "Animation 1",
+						"initial-frame": 0,
+						"enable-collisions": true,
+						"live-preview": false
+					},
+					"uid": 138,
+					"sid": 214538632987257,
+					"tags": "",
+					"instanceVariables": {},
+					"behaviors": {
+						"Твёрдый": {
+							"properties": {
+								"enabled": true,
+								"use-instance-tags": true,
+								"tags": ""
+							}
+						}
+					},
+					"materialSurfaceType": "smooth",
+					"showing": true,
+					"locked": false,
+					"world": {
+						"x": 741,
+						"y": 1573.5,
+						"width": 640,
+						"height": 41,
+						"originX": 0.5,
+						"originY": 0.5,
+						"color": [
+							1,
+							1,
+							1,
+							1
+						],
+						"z": 0,
+						"angle": 0
+					}
+				},
+				{
+					"type": "Ground",
+					"properties": {
+						"initially-visible": true,
+						"initial-animation": "Animation 1",
+						"initial-frame": 0,
+						"enable-collisions": true,
+						"live-preview": false
+					},
+					"uid": 139,
+					"sid": 928383004943879,
+					"tags": "spike",
+					"instanceVariables": {},
+					"behaviors": {
+						"Твёрдый": {
+							"properties": {
+								"enabled": true,
+								"use-instance-tags": true,
+								"tags": ""
+							}
+						}
+					},
+					"materialSurfaceType": "smooth",
+					"showing": true,
+					"locked": false,
+					"world": {
+						"x": 1555.5,
+						"y": 76.5,
+						"width": 711,
+						"height": 59,
+						"originX": 0.5,
+						"originY": 0.5,
+						"color": [
+							0.86,
+							0.14,
+							0.12,
 							1
 						],
 						"z": 0,

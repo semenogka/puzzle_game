@@ -70,24 +70,16 @@
 			"FakeDoor",
 			"Текст3",
 			"Detect",
-			"heavyBox",
 			"Текст4",
 			"ы",
 			"groundMove",
 			"ненажатая",
 			"нажатая",
-			"Door2",
-			"Door3",
-			"Door4",
-			"Door0",
 			"целое",
 			"чутьРазбитое",
 			"сильноРазбитое",
 			"Текст5",
-			"smallBox",
-			"what1",
-			"what2",
-			"what3"
+			"what"
 		],
 		"subfolders": []
 	},
@@ -253,6 +245,14 @@
 					"name": "EffectManager.js",
 					"type": "application/javascript",
 					"sid": 881100000000205,
+					"script-info": {
+						"purpose": "none"
+					}
+				},
+				{
+					"name": "CrushManager.js",
+					"type": "application/javascript",
+					"sid": 537340809982354,
 					"script-info": {
 						"purpose": "none"
 					}

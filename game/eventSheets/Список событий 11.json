@@ -18,6 +18,8 @@
 						"const playerManager = globalThis.PlayerManager;",
 						"const gravityManager = globalThis.GravityManager;",
 						"const fallManager = globalThis.FallManager;",
+						"const spikeManager = globalThis.SpikeManager;",
+						"",
 						"",
 						"if (!playerManager || !gravityManager || !fallManager) {",
 						"\tthrow new Error(\"Один из менеджеров не инициализирован\");",
@@ -38,6 +40,7 @@
 						"playerManager.initialize(runtime);",
 						"MusicManager.start(runtime, \"bgm.webm\");",
 						"SoundManager.initialize(runtime);",
+						"spikeManager.initialize(runtime);",
 						"globalThis.TransitionManager.initialize(runtime, player);",
 						"gravityManager.initialize(runtime, {",
 						"\tflipPlayer: true,",
@@ -77,6 +80,10 @@
 						"\tgravityManager.postUpdate(player, grounds);",
 						"\tcheckLevelTransition();",
 						"\tisDead = fallManager.checkPlayerFall(runtime, globalThis.GameOverManager, playerManager, isDead, player, fallLimit);",
+						"\tif (spikeManager.update(runtime, player, deltaTime)) {",
+						"\t\tisDead = true;",
+						"\t\treturn;",
+						"\t}",
 						"});",
 						""
 					]

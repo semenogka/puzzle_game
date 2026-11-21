@@ -12,6 +12,7 @@ import "./EffectManager.js";
 import "./SpikeManager.js";
 import "./ButtonManager.js";
 import "./PuzzleManager.js";
+import "./CrushManager.js";
 
 globalThis.RuntimeLoop = {
 	tick: null,

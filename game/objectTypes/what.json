@@ -1,7 +1,7 @@
 {
-	"name": "what2",
+	"name": "what",
 	"plugin-id": "Sprite",
-	"sid": 600904521054147,
+	"sid": 998089255941816,
 	"isGlobal": false,
 	"editorNewInstanceIsReplica": true,
 	"instanceVariables": [],
@@ -20,13 +20,13 @@
 						"exportFormat": "lossless",
 						"exportQuality": 0.8,
 						"fileType": "image/png",
-						"imageSpriteId": 5652501,
+						"imageSpriteId": 998089255941818,
 						"useCollisionPoly": true,
 						"duration": 1,
 						"tag": ""
 					}
 				],
-				"sid": 192756323132129,
+				"sid": 998089255941817,
 				"name": "Default",
 				"isLooping": false,
 				"isPingPong": false,
