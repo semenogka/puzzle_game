@@ -1,0 +1,92 @@
+{
+	"name": "Список событий 1",
+	"events": [
+		{
+			"eventType": "block",
+			"conditions": [
+				{
+					"id": "on-start-of-layout",
+					"objectClass": "System",
+					"sid": 307262942393426
+				}
+			],
+			"actions": [
+				{
+					"type": "script",
+					"language": "javascript",
+					"script": [
+						"",
+						"",
+						"const playerManager = globalThis.PlayerManager;",
+						"",
+						"if (!playerManager) {",
+						"\tthrow new Error(\"PlayerManager не инициализирован\");",
+						"}",
+						"const player = runtime.objects.Player.getFirstInstance();",
+						"const grounds = runtime.objects.Ground.getAllInstances();",
+						"const door = runtime.objects.Door.getFirstInstance();",
+						"",
+						"let levelChanging = false;",
+						"",
+						"const nextLevels = {",
+						"\t\"Level1\": \"Level2\"",
+						"};",
+						"",
+						"playerManager.initialize(runtime);",
+						"MusicManager.start(runtime, \"bgm.webm\");",
+						"SoundManager.initialize(runtime);",
+						"globalThis.TransitionManager.initialize(runtime, player);",
+						"",
+						"function checkLevelTransition() {",
+						"\tif (levelChanging || !door || !player) return;",
+						"",
+						"\tconst doorBox = door.getBoundingBox();",
+						"\tconst playerBox = player.getBoundingBox();",
+						"",
+						"\tconst overlaps =",
+						"\t\tplayerBox.right > doorBox.left &&",
+						"\t\tplayerBox.left < doorBox.right &&",
+						"\t\tplayerBox.bottom > doorBox.top &&",
+						"\t\tplayerBox.top < doorBox.bottom;",
+						"",
+						"\tif (!overlaps) return;",
+						"\tif (globalThis.GravityManager?.holdsDoor(player)) return;",
+						"",
+						"\tconst currentLayout = runtime.layout.name;",
+						"\tconst nextLayout = nextLevels[currentLayout];",
+						"",
+						"\tif (nextLayout) {",
+						"\t\tlevelChanging = true;",
+						"\t\tglobalThis.TransitionManager.start(runtime, player, nextLayout);",
+						"\t}",
+						"}",
+						"",
+						"globalThis.RuntimeLoop.set(() => {",
+						"\tif (globalThis.TransitionManager.entryActive || levelChanging) return;",
+						"",
+						"\tif (!player || grounds.length === 0) return;",
+						"",
+						"\tplayerManager.update(",
+						"\t\tplayer,",
+						"\t\tgrounds,",
+						"\t\t[],",
+						"\t\truntime.dt",
+						"\t);",
+						"",
+						"\tif (playerManager.crushed) {",
+						"\t\tlevelChanging = true;",
+						"\t\tglobalThis.GameOverManager.show(runtime, player, \"Вас придавило\");",
+						"\t\treturn;",
+						"\t}",
+						"",
+						"\tcheckLevelTransition();",
+						"});",
+						""
+					]
+				}
+			],
+			"sid": 433128184077273
+		}
+	],
+	"sid": 387451652193475
+}
