@@ -355,6 +355,13 @@ globalThis.PlayerManager = {
     resolveCollisions(player, grounds, boxes, solids) {
         this.onGround = false;
 
+        if (!this.crushed && globalThis.CrushManager?.isCrushed(player, grounds, boxes)) {
+            this.crushed = true;
+            this.velocityX = 0;
+            this.velocityY = 0;
+            return;
+        }
+
         let currentStandingBox = null;
 
         const solidResult = this.resolveOverlapPass(player, solids, boxes, true);
@@ -379,17 +386,6 @@ globalThis.PlayerManager = {
         }
 
         this.lastStandingBox = currentStandingBox;
-
-        if (globalThis.CrushManager?.isCrushed(
-            player,
-            grounds,
-            boxes,
-            this.gravitySign()
-        )) {
-            this.crushed = true;
-            this.velocityX = 0;
-            this.velocityY = 0;
-        }
     },
 
     canBeDragged(inst) {

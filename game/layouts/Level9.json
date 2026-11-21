@@ -261,7 +261,7 @@
 					},
 					"uid": 247,
 					"sid": 882200000000017,
-					"tags": "gravity",
+					"tags": "gravity up",
 					"instanceVariables": {},
 					"behaviors": {
 						"Перетаскивание": {
@@ -282,8 +282,8 @@
 					"showing": true,
 					"locked": false,
 					"world": {
-						"x": 922,
-						"y": 927,
+						"x": 893,
+						"y": 113,
 						"width": 200,
 						"height": 142,
 						"originX": 0.5,

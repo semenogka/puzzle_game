@@ -284,9 +284,9 @@
 					"showing": true,
 					"locked": false,
 					"world": {
-						"x": 1780,
+						"x": 1734,
 						"y": 635,
-						"width": 280,
+						"width": 372,
 						"height": 70,
 						"originX": 0.5,
 						"originY": 0.5,
@@ -366,7 +366,7 @@
 					"showing": true,
 					"locked": false,
 					"world": {
-						"x": 1760,
+						"x": 1817,
 						"y": 505,
 						"width": 120.00000000000001,
 						"height": 190,
@@ -493,9 +493,9 @@
 					"locked": false,
 					"world": {
 						"x": 850,
-						"y": 301,
+						"y": 298.1024284630815,
 						"width": 280,
-						"height": 70,
+						"height": 64.20485692616296,
 						"originX": 0.5,
 						"originY": 0.5,
 						"color": [
@@ -579,6 +579,48 @@
 						"x": 1555.5,
 						"y": 76.5,
 						"width": 711,
+						"height": 59,
+						"originX": 0.5,
+						"originY": 0.5,
+						"color": [
+							0.86,
+							0.14,
+							0.12,
+							1
+						],
+						"z": 0,
+						"angle": 0
+					}
+				},
+				{
+					"type": "Ground",
+					"properties": {
+						"initially-visible": true,
+						"initial-animation": "Animation 1",
+						"initial-frame": 0,
+						"enable-collisions": true,
+						"live-preview": false
+					},
+					"uid": 74,
+					"sid": 436338359543931,
+					"tags": "spike",
+					"instanceVariables": {},
+					"behaviors": {
+						"Твёрдый": {
+							"properties": {
+								"enabled": true,
+								"use-instance-tags": true,
+								"tags": ""
+							}
+						}
+					},
+					"materialSurfaceType": "smooth",
+					"showing": true,
+					"locked": false,
+					"world": {
+						"x": 1734,
+						"y": 697,
+						"width": 359,
 						"height": 59,
 						"originX": 0.5,
 						"originY": 0.5,

@@ -409,9 +409,9 @@
 					"locked": false,
 					"world": {
 						"x": 1703,
-						"y": 578,
+						"y": 563,
 						"width": 414,
-						"height": 36,
+						"height": 6,
 						"originX": 0.5,
 						"originY": 0.5,
 						"color": [

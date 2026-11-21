@@ -45,7 +45,7 @@ globalThis.GameOverManager = {
 		this.ready = false;
 		this.elapsed = 0;
 		this.nodes = [];
-
+		globalThis.BoxManager?.dropAll(runtime);
 		const playerManager = globalThis.PlayerManager;
 		if (playerManager) {
 			playerManager.velocityX = 0;

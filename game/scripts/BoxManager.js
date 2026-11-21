@@ -324,7 +324,34 @@ globalThis.BoxManager = {
 		}
 	},
 
+	dropAll(runtime) {
+		const boxes = new Set(this.startPositions.keys());
+
+		if (runtime?.objects.Box) {
+			for (const box of runtime.objects.Box.getAllInstances()) {
+				boxes.add(box);
+			}
+		}
+
+		for (const box of boxes) {
+			if (!box || box.destroyed) continue;
+
+			const behavior =
+				box.behaviors?.["Перетаскивание"] ||
+				box.behaviors?.["DragDrop"];
+
+			if (!behavior) continue;
+
+			if (behavior.isDragging) {
+				behavior.drop();
+			}
+		}
+
+		this.motions.clear();
+		this.lockedBoxes.clear();
+	},
 	update(boxes, grounds, player, lines, deltaTime) {
+		if (globalThis.GameOverManager?.active) return;
 		const viewport = player.layer.getViewport();
 		this.register(boxes);
 		this.updateLockedBoxes(deltaTime);

@@ -23,14 +23,24 @@ globalThis.SpikeManager = {
 
 	touches(a, b) {
 		if (!a || !b) return false;
+
 		const ox = Math.min(a.right, b.right) - Math.max(a.left, b.left);
-		if (ox < 12) return false;
 		const oy = Math.min(a.bottom, b.bottom) - Math.max(a.top, b.top);
-		if (oy > 4) return true;
+
+		if (ox > 4 && oy > 4) return true;
+
 		const down = a.bottom - b.top;
-		if (down >= -12 && down <= 36) return true;
+		if (ox > 4 && down >= -12 && down <= 36) return true;
+
 		const up = b.bottom - a.top;
-		if (up >= -12 && up <= 36) return true;
+		if (ox > 4 && up >= -12 && up <= 36) return true;
+
+		const right = a.right - b.left;
+		if (right >= -12 && right <= 36 && oy > 4) return true;
+
+		const left = b.right - a.left;
+		if (left >= -12 && left <= 36 && oy > 4) return true;
+
 		return false;
 	},
 

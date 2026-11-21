@@ -1,157 +1,147 @@
 
 globalThis.CrushManager = {
 	active: true,
-	crusherList: [],
+	rects: [],
+	list: [],
+
+	read(inst, out) {
+		const box = inst.getBoundingBox();
+		out.left = box.left;
+		out.right = box.right;
+		out.top = box.top;
+		out.bottom = box.bottom;
+
+		if (out.right < out.left) {
+			const swap = out.left;
+			out.left = out.right;
+			out.right = swap;
+		}
+
+		if (out.bottom < out.top) {
+			const swap = out.top;
+			out.top = out.bottom;
+			out.bottom = swap;
+		}
+
+		return out;
+	},
 
 	overlapX(a, b) {
 		return Math.min(a.right, b.right) - Math.max(a.left, b.left);
 	},
 
-	hasGravityTag(inst) {
-		if (!inst) return false;
-		if (typeof inst.hasTag === "function") return inst.hasTag("gravity");
-		if (typeof inst.getAllTags === "function") return inst.getAllTags().includes("gravity");
-		return false;
+	tallWall(solid, player) {
+		const height = solid.bottom - solid.top;
+		const solidWidth = solid.right - solid.left;
+		const playerWidth = player.right - player.left;
+		const spans = solid.top < player.top && solid.bottom > player.bottom;
+		return height > 500 && spans && solidWidth > playerWidth * 2;
 	},
 
-	collectCrushers(boxes) {
-		const list = this.crusherList;
+	draggable(inst) {
+		return !!globalThis.PlayerManager?.canBeDragged(inst);
+	},
+
+	isCrushed(player, grounds, boxes) {
+		if (!this.active) return false;
+		if (!player) return false;
+
+		const manager = globalThis.PlayerManager;
+		const playerBox = manager?.actorBox
+			? manager.actorBox(player)
+			: this.read(player, this.playerRect || (this.playerRect = {}));
+
+		const width = playerBox.right - playerBox.left;
+		const height = playerBox.bottom - playerBox.top;
+		if (width < 2 || height < 2) return false;
+
+		const list = this.list;
 		let count = 0;
 
-		const bodies = globalThis.GravityManager?.bodies;
+		const add = (arr) => {
+			if (!arr) return;
 
-		if (bodies) {
-			for (let i = 0; i < bodies.length; i++) {
-				const inst = bodies[i]?.inst;
+			for (let i = 0; i < arr.length; i++) {
+				const inst = arr[i];
+				if (!inst || inst === player) continue;
 
-				if (inst && !inst.destroyed && this.hasGravityTag(inst)) {
-					list[count++] = inst;
-				}
-			}
-		}
-
-		if (boxes) {
-			for (let i = 0; i < boxes.length; i++) {
-				const inst = boxes[i];
-
-				if (!inst || inst.destroyed || !this.hasGravityTag(inst)) continue;
-
-				let seen = false;
-
+				let duplicate = false;
 				for (let j = 0; j < count; j++) {
 					if (list[j] === inst) {
-						seen = true;
+						duplicate = true;
 						break;
 					}
 				}
 
-				if (!seen) list[count++] = inst;
+				if (!duplicate) list[count++] = inst;
 			}
-		}
+		};
 
+		add(grounds);
+		add(boxes);
 		list.length = count;
-		return list;
-	},
 
-	supportIn(playerBox, list, minOverlapX, sign) {
-		if (!list) return false;
+		const rects = this.rects;
 
-		for (let i = 0; i < list.length; i++) {
-			const solid = list[i];
+		for (let i = 0; i < count; i++) {
+			let rect = rects[i];
 
-			if (!solid || solid.destroyed) continue;
-
-			const box = solid.getBoundingBox();
-
-			if (this.overlapX(playerBox, box) < minOverlapX) continue;
-
-			if (sign > 0) {
-				const gap = playerBox.bottom - box.top;
-
-				if (gap >= -12 && gap <= 20 && box.bottom > playerBox.bottom - 2) {
-					return true;
-				}
-			} else {
-				const gap = box.bottom - playerBox.top;
-
-				if (gap >= -12 && gap <= 20 && box.top < playerBox.top + 2) {
-					return true;
-				}
+			if (!rect) {
+				rects[i] = rect = {
+					left: 0,
+					right: 0,
+					top: 0,
+					bottom: 0
+				};
 			}
+
+			this.read(list[i], rect);
 		}
 
-		return false;
-	},
+		const minOverlapX = Math.max(16, width * 0.42);
+		const mid = (playerBox.top + playerBox.bottom) * 0.5;
+		const depth = 6;
 
-	hasVerticalSupport(playerBox, grounds, crushers, minOverlapX, sign) {
-		return (
-			this.supportIn(playerBox, grounds, minOverlapX, sign) ||
-			this.supportIn(playerBox, crushers, minOverlapX, sign)
-		);
-	},
+		for (let i = 0; i < count; i++) {
+			if (!this.active) return false;
+			if (this.draggable(list[i])) continue;
 
-	pressesAlongGravity(playerBox, box, width, height, sign) {
-		const overlapY = Math.min(playerBox.bottom, box.bottom) -
-			Math.max(playerBox.top, box.top);
+			const crusher = rects[i];
 
-		if (overlapY <= 0) return false;
+			if (this.overlapX(playerBox, crusher) < minOverlapX) continue;
+			if (this.tallWall(crusher, playerBox)) continue;
 
-		const overlapX = this.overlapX(playerBox, box);
+			const fromAbove =
+				crusher.bottom > playerBox.top + depth &&
+				crusher.top < mid;
 
-		if (overlapX < Math.max(16, width * 0.5)) return false;
+			const fromBelow =
+				crusher.top < playerBox.bottom - depth &&
+				crusher.bottom > mid;
 
-		if (sign > 0) {
-			if (box.top > playerBox.top + height * 0.5) return false;
-			if (box.bottom < playerBox.top) return false;
-			return true;
-		}
+			if (!fromAbove && !fromBelow) continue;
 
-		if (box.bottom < playerBox.bottom - height * 0.5) return false;
-		if (box.top > playerBox.bottom) return false;
+			for (let j = 0; j < count; j++) {
+				if (j === i) continue;
 
-		return true;
-	},
+				const support = rects[j];
 
-	isCrushed(player, grounds, boxes, gravitySign) {
-		if (!this.active || !player) return false;
+				if (this.overlapX(playerBox, support) < 8) continue;
+				if (this.tallWall(support, playerBox)) continue;
 
-		const playerBox = player.getBoundingBox();
+				const floorUnderFeet =
+					fromAbove &&
+					support.top <= playerBox.bottom + 10 &&
+					support.top >= mid - 4 &&
+					support.bottom > playerBox.bottom - 4;
 
-		const height = playerBox.bottom - playerBox.top;
-		const width = playerBox.right - playerBox.left;
+				const ceilingOverHead =
+					fromBelow &&
+					support.bottom >= playerBox.top - 10 &&
+					support.bottom <= mid + 4 &&
+					support.top < playerBox.top + 4;
 
-		if (height < 4 || width < 4) return false;
-
-		const minOverlapX = Math.max(16, width * 0.5);
-		const crushers = this.collectCrushers(boxes);
-
-		if (!crushers.length) return false;
-
-		if (!this.hasVerticalSupport(
-			playerBox,
-			grounds,
-			crushers,
-			minOverlapX,
-			gravitySign
-		)) return false;
-
-		for (let i = 0; i < crushers.length; i++) {
-			const inst = crushers[i];
-
-			if (!inst || inst.destroyed || inst === player) continue;
-
-			if (globalThis.PlayerManager?.canBeDragged?.(inst)) continue;
-
-			const box = inst.getBoundingBox();
-
-			if (this.pressesAlongGravity(
-				playerBox,
-				box,
-				width,
-				height,
-				gravitySign
-			)) {
-				return true;
+				if (floorUnderFeet || ceilingOverHead) return true;
 			}
 		}
 
