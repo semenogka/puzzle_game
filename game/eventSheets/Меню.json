@@ -1,0 +1,28 @@
+{
+	"name": "Меню",
+	"events": [
+		{
+			"eventType": "block",
+			"conditions": [
+				{
+					"id": "on-start-of-layout",
+					"objectClass": "System",
+					"sid": 990501
+				}
+			],
+			"actions": [
+				{
+					"type": "script",
+					"language": "javascript",
+					"script": [
+						"const menu = globalThis.MenuManager;",
+						"if (!menu) throw new Error(\"MenuManager не инициализирован\");",
+						"menu.start(runtime);"
+					]
+				}
+			],
+			"sid": 990502
+		}
+	],
+	"sid": 990503
+}

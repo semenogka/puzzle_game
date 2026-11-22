@@ -178,7 +178,7 @@ globalThis.GameOverManager = {
 
 	onKey(event) {
 		const code = (event.code || "").toLowerCase();
-		if (code === "keyr" || code === "enter" || code === "numpadenter" || code === "space") {
+		if (code === "enter" || code === "numpadenter" || code === "space") {
 			this.requestRestart();
 		}
 	},

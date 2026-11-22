@@ -897,7 +897,7 @@
 					},
 					"uid": 136,
 					"sid": 800748870900937,
-					"tags": "zeroGravBox",
+					"tags": "",
 					"instanceVariables": {},
 					"behaviors": {
 						"Перетаскивание": {
@@ -2356,8 +2356,8 @@
 					"showing": true,
 					"locked": false,
 					"world": {
-						"x": 1421,
-						"y": 268,
+						"x": 1334,
+						"y": 651,
 						"width": 940,
 						"height": 512,
 						"originX": 0.5,

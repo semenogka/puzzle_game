@@ -92,6 +92,7 @@
 	},
 	"layouts": {
 		"items": [
+			"Menu",
 			"Level1",
 			"Level2",
 			"Level3",
@@ -110,6 +111,7 @@
 	},
 	"eventSheets": {
 		"items": [
+			"Меню",
 			"Список событий 1",
 			"Список событий 2",
 			"Список событий 3",
@@ -253,6 +255,30 @@
 					"name": "CrushManager.js",
 					"type": "application/javascript",
 					"sid": 537340809982354,
+					"script-info": {
+						"purpose": "none"
+					}
+				},
+				{
+					"name": "MenuManager.js",
+					"type": "application/javascript",
+					"sid": 990601,
+					"script-info": {
+						"purpose": "none"
+					}
+				},
+				{
+					"name": "PauseManager.js",
+					"type": "application/javascript",
+					"sid": 990602,
+					"script-info": {
+						"purpose": "none"
+					}
+				},
+				{
+					"name": "RestartManager.js",
+					"type": "application/javascript",
+					"sid": 990603,
 					"script-info": {
 						"purpose": "none"
 					}
@@ -480,5 +506,5 @@
 	},
 	"viewportWidth": 1920,
 	"viewportHeight": 1080,
-	"firstLayout": null
+	"firstLayout": "Menu"
 }

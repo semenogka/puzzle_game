@@ -184,6 +184,7 @@ globalThis.GravityManager = {
 		this.tickBound = true;
 
 		runtime.addEventListener("tick", () => {
+			if (globalThis.PauseManager?.paused) return;
 			if (!this.active || !this.runtime) return;
 			if (this.layoutName !== this.runtime.layout?.name) return;
 

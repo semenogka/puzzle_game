@@ -62,6 +62,12 @@ globalThis.MusicManager = {
 		}
 	},
 
+	setVolume(volume) {
+		const next = Math.min(1, Math.max(0, Number(volume) || 0));
+		this.volume = next;
+		if (this.audio) this.audio.volume = next;
+	},
+
 	play() {
 		if (!this.audio) return;
 

@@ -13,6 +13,9 @@ import "./SpikeManager.js";
 import "./ButtonManager.js";
 import "./PuzzleManager.js";
 import "./CrushManager.js";
+import "./MenuManager.js";
+import "./PauseManager.js";
+import "./RestartManager.js";
 
 globalThis.RuntimeLoop = {
 	tick: null,
@@ -25,6 +28,10 @@ globalThis.RuntimeLoop = {
 		if (this.bound) return;
 		this.bound = true;
 		runtime.addEventListener("tick", () => {
+			if (globalThis.PauseManager?.paused) {
+				globalThis.PauseManager.tick();
+				return;
+			}
 			const tick = this.tick;
 			if (tick) tick();
 		});
@@ -33,14 +40,20 @@ globalThis.RuntimeLoop = {
 
 runOnStartup(runtime => {
 	runtime.addEventListener("beforeprojectstart", () => {
+		globalThis.MenuManager.loadSettings();
 		globalThis.MusicManager.initialize(runtime);
 		globalThis.SoundManager.initialize(runtime);
 		globalThis.GameOverManager.initialize(runtime);
 		globalThis.TransitionManager.bind(runtime);
 		globalThis.EffectManager.bind(runtime);
 		globalThis.RuntimeLoop.bind(runtime);
+		globalThis.MenuManager.bind(runtime);
+		globalThis.PauseManager.bind(runtime);
+		globalThis.RestartManager.bind(runtime);
 
 		runtime.addEventListener("beforelayoutstart", () => {
+			globalThis.MenuManager.dismiss();
+			globalThis.PauseManager.close();
 			globalThis.RuntimeLoop.tick = null;
 			globalThis.GravityManager.release();
 			globalThis.EffectManager.release();

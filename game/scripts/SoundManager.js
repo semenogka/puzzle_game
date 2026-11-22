@@ -84,23 +84,25 @@ globalThis.SoundManager = {
 		if (!url) return null;
 
 		const entry = this.bank.get(name);
-		const volume = (options.volume ?? entry?.volume ?? this.defaultVolume) * this.masterVolume;
-		if (options.loop) return this.startLoop(name, url, volume);
+		const base = options.volume ?? entry?.volume ?? this.defaultVolume;
+		const volume = base * this.masterVolume;
+		if (options.loop) return this.startLoop(name, url, base);
 		return this.startOneShot(name, url, volume);
 	},
 
-	async startLoop(name, url, volume) {
+	async startLoop(name, url, base) {
 		let loop = this.loops.get(name);
 		if (!loop) {
 			const audio = new Audio(url);
 			audio.loop = true;
 			audio.preload = "auto";
-			loop = { audio, starting: false };
+			loop = { audio, starting: false, base };
 			this.loops.set(name, loop);
 		}
 
+		loop.base = base;
 		loop.audio.loop = true;
-		loop.audio.volume = volume;
+		loop.audio.volume = base * this.masterVolume;
 		if (!loop.audio.paused) return loop.audio;
 		if (loop.starting) return loop.audio;
 
@@ -202,6 +204,10 @@ globalThis.SoundManager = {
 	},
 
 	setMasterVolume(volume) {
-		this.masterVolume = volume;
+		this.masterVolume = Math.min(1, Math.max(0, Number(volume) || 0));
+		for (const loop of this.loops.values()) {
+			if (!loop?.audio || loop.base == null) continue;
+			loop.audio.volume = loop.base * this.masterVolume;
+		}
 	}
 };
