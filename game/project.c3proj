@@ -105,7 +105,8 @@
 			"Level10",
 			"Level11",
 			"Level12",
-			"Level13"
+			"Level13",
+			"Level16"
 		],
 		"subfolders": []
 	},
@@ -124,7 +125,8 @@
 			"Список событий 10",
 			"Список событий 11",
 			"Список событий 12",
-			"Список событий 13"
+			"Список событий 13",
+			"Список событий 16"
 		],
 		"subfolders": []
 	},
@@ -282,6 +284,14 @@
 					"script-info": {
 						"purpose": "none"
 					}
+				},
+				{
+					"name": "GlassesManager.js",
+					"type": "application/javascript",
+					"sid": 990604,
+					"script-info": {
+						"purpose": "none"
+					}
 				}
 			],
 			"subfolders": []
@@ -419,6 +429,14 @@
 					"name": "ы.svg",
 					"type": "image/svg+xml",
 					"sid": 214538396724982,
+					"file-info": {
+						"purpose": "none"
+					}
+				},
+				{
+					"name": "pink.svg",
+					"type": "image/svg+xml",
+					"sid": 991610170,
 					"file-info": {
 						"purpose": "none"
 					}

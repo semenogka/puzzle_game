@@ -16,6 +16,7 @@ import "./CrushManager.js";
 import "./MenuManager.js";
 import "./PauseManager.js";
 import "./RestartManager.js";
+import "./GlassesManager.js";
 
 globalThis.RuntimeLoop = {
 	tick: null,

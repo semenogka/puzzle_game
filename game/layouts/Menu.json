@@ -142,7 +142,7 @@
 						"y": 332,
 						"width": 64,
 						"height": 3,
-						"originX": 0,
+						"originX": 0.5,
 						"originY": 0.5,
 						"color": [
 							1,
@@ -1357,6 +1357,56 @@
 				{
 					"type": "Текст",
 					"properties": {
+						"text": "16",
+						"enable-bbcode": false,
+						"font": "Correction Brush",
+						"size": 34,
+						"line-height": 0,
+						"bold": false,
+						"italic": false,
+						"color": [
+							0.82,
+							0.84,
+							0.86,
+							1
+						],
+						"horizontal-alignment": "left",
+						"vertical-alignment": "center",
+						"wrapping": "word",
+						"text-direction": "ltr",
+						"icon-set": -1,
+						"initially-visible": false,
+						"origin": "top-left",
+						"read-aloud": false
+					},
+					"uid": 991040,
+					"sid": 992040,
+					"tags": "menu levels hit level-16",
+					"instanceVariables": {},
+					"behaviors": {},
+					"materialSurfaceType": "smooth",
+					"showing": true,
+					"locked": false,
+					"world": {
+						"x": 406,
+						"y": 714,
+						"width": 180,
+						"height": 64,
+						"originX": 0,
+						"originY": 0,
+						"color": [
+							1,
+							1,
+							1,
+							1
+						],
+						"z": 0,
+						"angle": 0
+					}
+				},
+				{
+					"type": "Текст",
+					"properties": {
 						"text": "настройки",
 						"enable-bbcode": false,
 						"font": "Correction Brush",
@@ -1590,7 +1640,7 @@
 						"y": 448,
 						"width": 340,
 						"height": 3,
-						"originX": 0,
+						"originX": 0.5,
 						"originY": 0.5,
 						"color": [
 							1,
@@ -1638,7 +1688,7 @@
 						"y": 448,
 						"width": 14,
 						"height": 14,
-						"originX": 0,
+						"originX": 0.5,
 						"originY": 0.5,
 						"color": [
 							1,
@@ -1786,7 +1836,7 @@
 						"y": 568,
 						"width": 340,
 						"height": 3,
-						"originX": 0,
+						"originX": 0.5,
 						"originY": 0.5,
 						"color": [
 							1,
@@ -1834,7 +1884,7 @@
 						"y": 568,
 						"width": 14,
 						"height": 14,
-						"originX": 0,
+						"originX": 0.5,
 						"originY": 0.5,
 						"color": [
 							1,
