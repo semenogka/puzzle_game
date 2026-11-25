@@ -1,0 +1,765 @@
+{
+	"name": "Backdrop",
+	"plugin-id": "Sprite",
+	"sid": 771330000000100,
+	"isGlobal": false,
+	"editorNewInstanceIsReplica": true,
+	"instanceVariables": [],
+	"behaviorTypes": [],
+	"effectTypes": [],
+	"animations": {
+		"items": [
+			{
+				"frames": [
+					{
+						"width": 1800,
+						"height": 1500,
+						"originX": 0.5,
+						"originY": 0.5,
+						"originalSource": "",
+						"exportFormat": "lossless",
+						"exportQuality": 0.8,
+						"fileType": "image/png",
+						"imageSpriteId": 771330000000001,
+						"useCollisionPoly": false,
+						"duration": 1,
+						"tag": ""
+					}
+				],
+				"sid": 771330000010000,
+				"name": "Sky1",
+				"isLooping": false,
+				"isPingPong": false,
+				"repeatCount": 1,
+				"repeatTo": 0,
+				"speed": 5
+			},
+			{
+				"frames": [
+					{
+						"width": 1800,
+						"height": 1500,
+						"originX": 0.5,
+						"originY": 0.5,
+						"originalSource": "",
+						"exportFormat": "lossless",
+						"exportQuality": 0.8,
+						"fileType": "image/png",
+						"imageSpriteId": 771330000000002,
+						"useCollisionPoly": false,
+						"duration": 1,
+						"tag": ""
+					}
+				],
+				"sid": 771330000010001,
+				"name": "Cloud1",
+				"isLooping": false,
+				"isPingPong": false,
+				"repeatCount": 1,
+				"repeatTo": 0,
+				"speed": 5
+			},
+			{
+				"frames": [
+					{
+						"width": 1800,
+						"height": 1500,
+						"originX": 0.5,
+						"originY": 0.5,
+						"originalSource": "",
+						"exportFormat": "lossless",
+						"exportQuality": 0.8,
+						"fileType": "image/png",
+						"imageSpriteId": 771330000000003,
+						"useCollisionPoly": false,
+						"duration": 1,
+						"tag": ""
+					}
+				],
+				"sid": 771330000010002,
+				"name": "Far1",
+				"isLooping": false,
+				"isPingPong": false,
+				"repeatCount": 1,
+				"repeatTo": 0,
+				"speed": 5
+			},
+			{
+				"frames": [
+					{
+						"width": 1800,
+						"height": 1500,
+						"originX": 0.5,
+						"originY": 0.5,
+						"originalSource": "",
+						"exportFormat": "lossless",
+						"exportQuality": 0.8,
+						"fileType": "image/png",
+						"imageSpriteId": 771330000000004,
+						"useCollisionPoly": false,
+						"duration": 1,
+						"tag": ""
+					}
+				],
+				"sid": 771330000010003,
+				"name": "Main1",
+				"isLooping": false,
+				"isPingPong": false,
+				"repeatCount": 1,
+				"repeatTo": 0,
+				"speed": 5
+			},
+			{
+				"frames": [
+					{
+						"width": 1800,
+						"height": 1500,
+						"originX": 0.5,
+						"originY": 0.5,
+						"originalSource": "",
+						"exportFormat": "lossless",
+						"exportQuality": 0.8,
+						"fileType": "image/png",
+						"imageSpriteId": 771330000000005,
+						"useCollisionPoly": false,
+						"duration": 1,
+						"tag": ""
+					}
+				],
+				"sid": 771330000010004,
+				"name": "Fog1",
+				"isLooping": false,
+				"isPingPong": false,
+				"repeatCount": 1,
+				"repeatTo": 0,
+				"speed": 5
+			},
+			{
+				"frames": [
+					{
+						"width": 1800,
+						"height": 1500,
+						"originX": 0.5,
+						"originY": 0.5,
+						"originalSource": "",
+						"exportFormat": "lossless",
+						"exportQuality": 0.8,
+						"fileType": "image/png",
+						"imageSpriteId": 771330000000006,
+						"useCollisionPoly": false,
+						"duration": 1,
+						"tag": ""
+					}
+				],
+				"sid": 771330000010005,
+				"name": "Sky2",
+				"isLooping": false,
+				"isPingPong": false,
+				"repeatCount": 1,
+				"repeatTo": 0,
+				"speed": 5
+			},
+			{
+				"frames": [
+					{
+						"width": 1800,
+						"height": 1500,
+						"originX": 0.5,
+						"originY": 0.5,
+						"originalSource": "",
+						"exportFormat": "lossless",
+						"exportQuality": 0.8,
+						"fileType": "image/png",
+						"imageSpriteId": 771330000000007,
+						"useCollisionPoly": false,
+						"duration": 1,
+						"tag": ""
+					}
+				],
+				"sid": 771330000010006,
+				"name": "Cloud2",
+				"isLooping": false,
+				"isPingPong": false,
+				"repeatCount": 1,
+				"repeatTo": 0,
+				"speed": 5
+			},
+			{
+				"frames": [
+					{
+						"width": 1800,
+						"height": 1500,
+						"originX": 0.5,
+						"originY": 0.5,
+						"originalSource": "",
+						"exportFormat": "lossless",
+						"exportQuality": 0.8,
+						"fileType": "image/png",
+						"imageSpriteId": 771330000000008,
+						"useCollisionPoly": false,
+						"duration": 1,
+						"tag": ""
+					}
+				],
+				"sid": 771330000010007,
+				"name": "Far2",
+				"isLooping": false,
+				"isPingPong": false,
+				"repeatCount": 1,
+				"repeatTo": 0,
+				"speed": 5
+			},
+			{
+				"frames": [
+					{
+						"width": 1800,
+						"height": 1500,
+						"originX": 0.5,
+						"originY": 0.5,
+						"originalSource": "",
+						"exportFormat": "lossless",
+						"exportQuality": 0.8,
+						"fileType": "image/png",
+						"imageSpriteId": 771330000000009,
+						"useCollisionPoly": false,
+						"duration": 1,
+						"tag": ""
+					}
+				],
+				"sid": 771330000010008,
+				"name": "Main2",
+				"isLooping": false,
+				"isPingPong": false,
+				"repeatCount": 1,
+				"repeatTo": 0,
+				"speed": 5
+			},
+			{
+				"frames": [
+					{
+						"width": 1800,
+						"height": 1500,
+						"originX": 0.5,
+						"originY": 0.5,
+						"originalSource": "",
+						"exportFormat": "lossless",
+						"exportQuality": 0.8,
+						"fileType": "image/png",
+						"imageSpriteId": 771330000000010,
+						"useCollisionPoly": false,
+						"duration": 1,
+						"tag": ""
+					}
+				],
+				"sid": 771330000010009,
+				"name": "Fog2",
+				"isLooping": false,
+				"isPingPong": false,
+				"repeatCount": 1,
+				"repeatTo": 0,
+				"speed": 5
+			},
+			{
+				"frames": [
+					{
+						"width": 1800,
+						"height": 1500,
+						"originX": 0.5,
+						"originY": 0.5,
+						"originalSource": "",
+						"exportFormat": "lossless",
+						"exportQuality": 0.8,
+						"fileType": "image/png",
+						"imageSpriteId": 771330000000011,
+						"useCollisionPoly": false,
+						"duration": 1,
+						"tag": ""
+					}
+				],
+				"sid": 771330000010010,
+				"name": "Sky3",
+				"isLooping": false,
+				"isPingPong": false,
+				"repeatCount": 1,
+				"repeatTo": 0,
+				"speed": 5
+			},
+			{
+				"frames": [
+					{
+						"width": 1800,
+						"height": 1500,
+						"originX": 0.5,
+						"originY": 0.5,
+						"originalSource": "",
+						"exportFormat": "lossless",
+						"exportQuality": 0.8,
+						"fileType": "image/png",
+						"imageSpriteId": 771330000000012,
+						"useCollisionPoly": false,
+						"duration": 1,
+						"tag": ""
+					}
+				],
+				"sid": 771330000010011,
+				"name": "Cloud3",
+				"isLooping": false,
+				"isPingPong": false,
+				"repeatCount": 1,
+				"repeatTo": 0,
+				"speed": 5
+			},
+			{
+				"frames": [
+					{
+						"width": 1800,
+						"height": 1500,
+						"originX": 0.5,
+						"originY": 0.5,
+						"originalSource": "",
+						"exportFormat": "lossless",
+						"exportQuality": 0.8,
+						"fileType": "image/png",
+						"imageSpriteId": 771330000000013,
+						"useCollisionPoly": false,
+						"duration": 1,
+						"tag": ""
+					}
+				],
+				"sid": 771330000010012,
+				"name": "Far3",
+				"isLooping": false,
+				"isPingPong": false,
+				"repeatCount": 1,
+				"repeatTo": 0,
+				"speed": 5
+			},
+			{
+				"frames": [
+					{
+						"width": 1800,
+						"height": 1500,
+						"originX": 0.5,
+						"originY": 0.5,
+						"originalSource": "",
+						"exportFormat": "lossless",
+						"exportQuality": 0.8,
+						"fileType": "image/png",
+						"imageSpriteId": 771330000000014,
+						"useCollisionPoly": false,
+						"duration": 1,
+						"tag": ""
+					}
+				],
+				"sid": 771330000010013,
+				"name": "Main3",
+				"isLooping": false,
+				"isPingPong": false,
+				"repeatCount": 1,
+				"repeatTo": 0,
+				"speed": 5
+			},
+			{
+				"frames": [
+					{
+						"width": 1800,
+						"height": 1500,
+						"originX": 0.5,
+						"originY": 0.5,
+						"originalSource": "",
+						"exportFormat": "lossless",
+						"exportQuality": 0.8,
+						"fileType": "image/png",
+						"imageSpriteId": 771330000000015,
+						"useCollisionPoly": false,
+						"duration": 1,
+						"tag": ""
+					}
+				],
+				"sid": 771330000010014,
+				"name": "Fog3",
+				"isLooping": false,
+				"isPingPong": false,
+				"repeatCount": 1,
+				"repeatTo": 0,
+				"speed": 5
+			},
+			{
+				"frames": [
+					{
+						"width": 1800,
+						"height": 1500,
+						"originX": 0.5,
+						"originY": 0.5,
+						"originalSource": "",
+						"exportFormat": "lossless",
+						"exportQuality": 0.8,
+						"fileType": "image/png",
+						"imageSpriteId": 771330000000016,
+						"useCollisionPoly": false,
+						"duration": 1,
+						"tag": ""
+					}
+				],
+				"sid": 771330000010015,
+				"name": "Sky4",
+				"isLooping": false,
+				"isPingPong": false,
+				"repeatCount": 1,
+				"repeatTo": 0,
+				"speed": 5
+			},
+			{
+				"frames": [
+					{
+						"width": 1800,
+						"height": 1500,
+						"originX": 0.5,
+						"originY": 0.5,
+						"originalSource": "",
+						"exportFormat": "lossless",
+						"exportQuality": 0.8,
+						"fileType": "image/png",
+						"imageSpriteId": 771330000000017,
+						"useCollisionPoly": false,
+						"duration": 1,
+						"tag": ""
+					}
+				],
+				"sid": 771330000010016,
+				"name": "Cloud4",
+				"isLooping": false,
+				"isPingPong": false,
+				"repeatCount": 1,
+				"repeatTo": 0,
+				"speed": 5
+			},
+			{
+				"frames": [
+					{
+						"width": 1800,
+						"height": 1500,
+						"originX": 0.5,
+						"originY": 0.5,
+						"originalSource": "",
+						"exportFormat": "lossless",
+						"exportQuality": 0.8,
+						"fileType": "image/png",
+						"imageSpriteId": 771330000000018,
+						"useCollisionPoly": false,
+						"duration": 1,
+						"tag": ""
+					}
+				],
+				"sid": 771330000010017,
+				"name": "Far4",
+				"isLooping": false,
+				"isPingPong": false,
+				"repeatCount": 1,
+				"repeatTo": 0,
+				"speed": 5
+			},
+			{
+				"frames": [
+					{
+						"width": 1800,
+						"height": 1500,
+						"originX": 0.5,
+						"originY": 0.5,
+						"originalSource": "",
+						"exportFormat": "lossless",
+						"exportQuality": 0.8,
+						"fileType": "image/png",
+						"imageSpriteId": 771330000000019,
+						"useCollisionPoly": false,
+						"duration": 1,
+						"tag": ""
+					}
+				],
+				"sid": 771330000010018,
+				"name": "Main4",
+				"isLooping": false,
+				"isPingPong": false,
+				"repeatCount": 1,
+				"repeatTo": 0,
+				"speed": 5
+			},
+			{
+				"frames": [
+					{
+						"width": 1800,
+						"height": 1500,
+						"originX": 0.5,
+						"originY": 0.5,
+						"originalSource": "",
+						"exportFormat": "lossless",
+						"exportQuality": 0.8,
+						"fileType": "image/png",
+						"imageSpriteId": 771330000000020,
+						"useCollisionPoly": false,
+						"duration": 1,
+						"tag": ""
+					}
+				],
+				"sid": 771330000010019,
+				"name": "Fog4",
+				"isLooping": false,
+				"isPingPong": false,
+				"repeatCount": 1,
+				"repeatTo": 0,
+				"speed": 5
+			},
+			{
+				"frames": [
+					{
+						"width": 1800,
+						"height": 1500,
+						"originX": 0.5,
+						"originY": 0.5,
+						"originalSource": "",
+						"exportFormat": "lossless",
+						"exportQuality": 0.8,
+						"fileType": "image/png",
+						"imageSpriteId": 771330000000021,
+						"useCollisionPoly": false,
+						"duration": 1,
+						"tag": ""
+					}
+				],
+				"sid": 771330000010020,
+				"name": "Sky5",
+				"isLooping": false,
+				"isPingPong": false,
+				"repeatCount": 1,
+				"repeatTo": 0,
+				"speed": 5
+			},
+			{
+				"frames": [
+					{
+						"width": 1800,
+						"height": 1500,
+						"originX": 0.5,
+						"originY": 0.5,
+						"originalSource": "",
+						"exportFormat": "lossless",
+						"exportQuality": 0.8,
+						"fileType": "image/png",
+						"imageSpriteId": 771330000000022,
+						"useCollisionPoly": false,
+						"duration": 1,
+						"tag": ""
+					}
+				],
+				"sid": 771330000010021,
+				"name": "Cloud5",
+				"isLooping": false,
+				"isPingPong": false,
+				"repeatCount": 1,
+				"repeatTo": 0,
+				"speed": 5
+			},
+			{
+				"frames": [
+					{
+						"width": 1800,
+						"height": 1500,
+						"originX": 0.5,
+						"originY": 0.5,
+						"originalSource": "",
+						"exportFormat": "lossless",
+						"exportQuality": 0.8,
+						"fileType": "image/png",
+						"imageSpriteId": 771330000000023,
+						"useCollisionPoly": false,
+						"duration": 1,
+						"tag": ""
+					}
+				],
+				"sid": 771330000010022,
+				"name": "Far5",
+				"isLooping": false,
+				"isPingPong": false,
+				"repeatCount": 1,
+				"repeatTo": 0,
+				"speed": 5
+			},
+			{
+				"frames": [
+					{
+						"width": 1800,
+						"height": 1500,
+						"originX": 0.5,
+						"originY": 0.5,
+						"originalSource": "",
+						"exportFormat": "lossless",
+						"exportQuality": 0.8,
+						"fileType": "image/png",
+						"imageSpriteId": 771330000000024,
+						"useCollisionPoly": false,
+						"duration": 1,
+						"tag": ""
+					}
+				],
+				"sid": 771330000010023,
+				"name": "Main5",
+				"isLooping": false,
+				"isPingPong": false,
+				"repeatCount": 1,
+				"repeatTo": 0,
+				"speed": 5
+			},
+			{
+				"frames": [
+					{
+						"width": 1800,
+						"height": 1500,
+						"originX": 0.5,
+						"originY": 0.5,
+						"originalSource": "",
+						"exportFormat": "lossless",
+						"exportQuality": 0.8,
+						"fileType": "image/png",
+						"imageSpriteId": 771330000000025,
+						"useCollisionPoly": false,
+						"duration": 1,
+						"tag": ""
+					}
+				],
+				"sid": 771330000010024,
+				"name": "Fog5",
+				"isLooping": false,
+				"isPingPong": false,
+				"repeatCount": 1,
+				"repeatTo": 0,
+				"speed": 5
+			},
+			{
+				"frames": [
+					{
+						"width": 1800,
+						"height": 1500,
+						"originX": 0.5,
+						"originY": 0.5,
+						"originalSource": "",
+						"exportFormat": "lossless",
+						"exportQuality": 0.8,
+						"fileType": "image/png",
+						"imageSpriteId": 771330000000026,
+						"useCollisionPoly": false,
+						"duration": 1,
+						"tag": ""
+					}
+				],
+				"sid": 771330000010025,
+				"name": "Sky6",
+				"isLooping": false,
+				"isPingPong": false,
+				"repeatCount": 1,
+				"repeatTo": 0,
+				"speed": 5
+			},
+			{
+				"frames": [
+					{
+						"width": 1800,
+						"height": 1500,
+						"originX": 0.5,
+						"originY": 0.5,
+						"originalSource": "",
+						"exportFormat": "lossless",
+						"exportQuality": 0.8,
+						"fileType": "image/png",
+						"imageSpriteId": 771330000000027,
+						"useCollisionPoly": false,
+						"duration": 1,
+						"tag": ""
+					}
+				],
+				"sid": 771330000010026,
+				"name": "Cloud6",
+				"isLooping": false,
+				"isPingPong": false,
+				"repeatCount": 1,
+				"repeatTo": 0,
+				"speed": 5
+			},
+			{
+				"frames": [
+					{
+						"width": 1800,
+						"height": 1500,
+						"originX": 0.5,
+						"originY": 0.5,
+						"originalSource": "",
+						"exportFormat": "lossless",
+						"exportQuality": 0.8,
+						"fileType": "image/png",
+						"imageSpriteId": 771330000000028,
+						"useCollisionPoly": false,
+						"duration": 1,
+						"tag": ""
+					}
+				],
+				"sid": 771330000010027,
+				"name": "Far6",
+				"isLooping": false,
+				"isPingPong": false,
+				"repeatCount": 1,
+				"repeatTo": 0,
+				"speed": 5
+			},
+			{
+				"frames": [
+					{
+						"width": 1800,
+						"height": 1500,
+						"originX": 0.5,
+						"originY": 0.5,
+						"originalSource": "",
+						"exportFormat": "lossless",
+						"exportQuality": 0.8,
+						"fileType": "image/png",
+						"imageSpriteId": 771330000000029,
+						"useCollisionPoly": false,
+						"duration": 1,
+						"tag": ""
+					}
+				],
+				"sid": 771330000010028,
+				"name": "Main6",
+				"isLooping": false,
+				"isPingPong": false,
+				"repeatCount": 1,
+				"repeatTo": 0,
+				"speed": 5
+			},
+			{
+				"frames": [
+					{
+						"width": 1800,
+						"height": 1500,
+						"originX": 0.5,
+						"originY": 0.5,
+						"originalSource": "",
+						"exportFormat": "lossless",
+						"exportQuality": 0.8,
+						"fileType": "image/png",
+						"imageSpriteId": 771330000000030,
+						"useCollisionPoly": false,
+						"duration": 1,
+						"tag": ""
+					}
+				],
+				"sid": 771330000010029,
+				"name": "Fog6",
+				"isLooping": false,
+				"isPingPong": false,
+				"repeatCount": 1,
+				"repeatTo": 0,
+				"speed": 5
+			}
+		],
+		"subfolders": []
+	}
+}

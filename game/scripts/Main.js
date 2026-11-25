@@ -17,6 +17,8 @@ import "./MenuManager.js";
 import "./PauseManager.js";
 import "./RestartManager.js";
 import "./GlassesManager.js";
+import "./BackdropManager.js";
+import "./CrtManager.js";
 
 globalThis.RuntimeLoop = {
 	tick: null,
@@ -51,6 +53,8 @@ runOnStartup(runtime => {
 		globalThis.MenuManager.bind(runtime);
 		globalThis.PauseManager.bind(runtime);
 		globalThis.RestartManager.bind(runtime);
+		globalThis.BackdropManager.bind(runtime);
+		globalThis.CrtManager.bind(runtime);
 
 		runtime.addEventListener("beforelayoutstart", () => {
 			globalThis.MenuManager.dismiss();
@@ -63,6 +67,8 @@ runOnStartup(runtime => {
 			globalThis.PuzzleManager.release();
 			globalThis.BoxManager.reset();
 			globalThis.FakeBoxManager.reset();
+			globalThis.GlassesManager.release();
+			globalThis.BackdropManager.clear();
 		});
 	});
 });

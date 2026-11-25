@@ -60,6 +60,7 @@
 			"Box",
 			"Мышь",
 			"Спрайт",
+			"Backdrop",
 			"Dot",
 			"Frame",
 			"DottedLine",
@@ -291,6 +292,22 @@
 					"name": "GlassesManager.js",
 					"type": "application/javascript",
 					"sid": 990604,
+					"script-info": {
+						"purpose": "none"
+					}
+				},
+				{
+					"name": "BackdropManager.js",
+					"type": "application/javascript",
+					"sid": 990607,
+					"script-info": {
+						"purpose": "none"
+					}
+				},
+				{
+					"name": "CrtManager.js",
+					"type": "application/javascript",
+					"sid": 990608,
 					"script-info": {
 						"purpose": "none"
 					}

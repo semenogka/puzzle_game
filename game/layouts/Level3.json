@@ -7,6 +7,176 @@
 			"subLayers": [],
 			"instances": [
 				{
+					"type": "Backdrop",
+					"properties": {
+						"initially-visible": true,
+						"initial-animation": "Sky3",
+						"initial-frame": 0,
+						"enable-collisions": false,
+						"live-preview": false
+					},
+					"uid": 772410030,
+					"sid": 772420030,
+					"tags": "bg-sky",
+					"instanceVariables": {},
+					"behaviors": {},
+					"materialSurfaceType": "smooth",
+					"showing": true,
+					"locked": false,
+					"world": {
+						"x": 960,
+						"y": 540,
+						"width": 1920,
+						"height": 1600,
+						"originX": 0.5,
+						"originY": 0.5,
+						"color": [
+							1,
+							1,
+							1,
+							1
+						],
+						"z": 0,
+						"angle": 0
+					}
+				},
+				{
+					"type": "Backdrop",
+					"properties": {
+						"initially-visible": true,
+						"initial-animation": "Cloud3",
+						"initial-frame": 0,
+						"enable-collisions": false,
+						"live-preview": false
+					},
+					"uid": 772410031,
+					"sid": 772420031,
+					"tags": "bg-cloud",
+					"instanceVariables": {},
+					"behaviors": {},
+					"materialSurfaceType": "smooth",
+					"showing": true,
+					"locked": false,
+					"world": {
+						"x": 960,
+						"y": 540,
+						"width": 1920,
+						"height": 1600,
+						"originX": 0.5,
+						"originY": 0.5,
+						"color": [
+							1,
+							1,
+							1,
+							1
+						],
+						"z": 0,
+						"angle": 0
+					}
+				},
+				{
+					"type": "Backdrop",
+					"properties": {
+						"initially-visible": true,
+						"initial-animation": "Far3",
+						"initial-frame": 0,
+						"enable-collisions": false,
+						"live-preview": false
+					},
+					"uid": 772410032,
+					"sid": 772420032,
+					"tags": "bg-far",
+					"instanceVariables": {},
+					"behaviors": {},
+					"materialSurfaceType": "smooth",
+					"showing": true,
+					"locked": false,
+					"world": {
+						"x": 960,
+						"y": 540,
+						"width": 1920,
+						"height": 1600,
+						"originX": 0.5,
+						"originY": 0.5,
+						"color": [
+							1,
+							1,
+							1,
+							1
+						],
+						"z": 0,
+						"angle": 0
+					}
+				},
+				{
+					"type": "Backdrop",
+					"properties": {
+						"initially-visible": true,
+						"initial-animation": "Main3",
+						"initial-frame": 0,
+						"enable-collisions": false,
+						"live-preview": false
+					},
+					"uid": 772410033,
+					"sid": 772420033,
+					"tags": "bg-main",
+					"instanceVariables": {},
+					"behaviors": {},
+					"materialSurfaceType": "smooth",
+					"showing": true,
+					"locked": false,
+					"world": {
+						"x": 960,
+						"y": 540,
+						"width": 1920,
+						"height": 1600,
+						"originX": 0.5,
+						"originY": 0.5,
+						"color": [
+							1,
+							1,
+							1,
+							1
+						],
+						"z": 0,
+						"angle": 0
+					}
+				},
+				{
+					"type": "Backdrop",
+					"properties": {
+						"initially-visible": true,
+						"initial-animation": "Fog3",
+						"initial-frame": 0,
+						"enable-collisions": false,
+						"live-preview": false
+					},
+					"uid": 772410034,
+					"sid": 772420034,
+					"tags": "bg-fog",
+					"instanceVariables": {},
+					"behaviors": {},
+					"materialSurfaceType": "smooth",
+					"showing": true,
+					"locked": false,
+					"world": {
+						"x": 960,
+						"y": 540,
+						"width": 1920,
+						"height": 1600,
+						"originX": 0.5,
+						"originY": 0.5,
+						"color": [
+							1,
+							1,
+							1,
+							1
+						],
+						"z": 0,
+						"angle": 0
+					}
+				},
+				{
 					"type": "Ground",
 					"properties": {
 						"initially-visible": true,
