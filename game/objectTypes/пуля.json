@@ -1,7 +1,7 @@
 {
-	"name": "Door2",
+	"name": "пуля",
 	"plugin-id": "Sprite",
-	"sid": 636224609099577,
+	"sid": 840158483581312,
 	"isGlobal": false,
 	"editorNewInstanceIsReplica": true,
 	"instanceVariables": [],
@@ -12,21 +12,21 @@
 			{
 				"frames": [
 					{
-						"width": 316,
-						"height": 632,
-						"originX": 0.5,
-						"originY": 0.5,
+						"width": 734,
+						"height": 243,
+						"originX": 0.5490463215258855,
+						"originY": 0.5349794238683128,
 						"originalSource": "",
 						"exportFormat": "lossless",
 						"exportQuality": 0.8,
-						"fileType": "image/jpeg",
-						"imageSpriteId": 2694584,
+						"fileType": "image/png",
+						"imageSpriteId": 2840423,
 						"useCollisionPoly": true,
 						"duration": 1,
 						"tag": ""
 					}
 				],
-				"sid": 306327838508668,
+				"sid": 740893098634574,
 				"name": "Default",
 				"isLooping": false,
 				"isPingPong": false,

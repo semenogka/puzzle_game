@@ -1,7 +1,7 @@
 {
-	"name": "what1",
+	"name": "замок",
 	"plugin-id": "Sprite",
-	"sid": 276373119905091,
+	"sid": 438884765884344,
 	"isGlobal": false,
 	"editorNewInstanceIsReplica": true,
 	"instanceVariables": [],
@@ -12,21 +12,21 @@
 			{
 				"frames": [
 					{
-						"width": 2048,
-						"height": 2048,
+						"width": 512,
+						"height": 512,
 						"originX": 0.5,
 						"originY": 0.5,
 						"originalSource": "",
 						"exportFormat": "lossless",
 						"exportQuality": 0.8,
 						"fileType": "image/png",
-						"imageSpriteId": 916002,
+						"imageSpriteId": 6771660,
 						"useCollisionPoly": true,
 						"duration": 1,
 						"tag": ""
 					}
 				],
-				"sid": 584512918646902,
+				"sid": 537560980419913,
 				"name": "Default",
 				"isLooping": false,
 				"isPingPong": false,

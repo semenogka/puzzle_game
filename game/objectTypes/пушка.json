@@ -1,7 +1,7 @@
 {
-	"name": "Door0",
+	"name": "пушка",
 	"plugin-id": "Sprite",
-	"sid": 545690063400238,
+	"sid": 966909209211956,
 	"isGlobal": false,
 	"editorNewInstanceIsReplica": true,
 	"instanceVariables": [],
@@ -12,21 +12,21 @@
 			{
 				"frames": [
 					{
-						"width": 316,
-						"height": 632,
+						"width": 512,
+						"height": 512,
 						"originX": 0.5,
 						"originY": 0.5,
 						"originalSource": "",
 						"exportFormat": "lossless",
 						"exportQuality": 0.8,
-						"fileType": "image/jpeg",
-						"imageSpriteId": 9533793,
+						"fileType": "image/png",
+						"imageSpriteId": 953952,
 						"useCollisionPoly": true,
 						"duration": 1,
 						"tag": ""
 					}
 				],
-				"sid": 194323536313300,
+				"sid": 148440222797255,
 				"name": "Default",
 				"isLooping": false,
 				"isPingPong": false,

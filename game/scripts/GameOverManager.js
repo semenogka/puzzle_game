@@ -45,7 +45,7 @@ globalThis.GameOverManager = {
 		this.ready = false;
 		this.elapsed = 0;
 		this.nodes = [];
-
+		globalThis.BoxManager?.dropAll(runtime);
 		const playerManager = globalThis.PlayerManager;
 		if (playerManager) {
 			playerManager.velocityX = 0;
@@ -178,7 +178,7 @@ globalThis.GameOverManager = {
 
 	onKey(event) {
 		const code = (event.code || "").toLowerCase();
-		if (code === "keyr" || code === "enter" || code === "numpadenter" || code === "space") {
+		if (code === "enter" || code === "numpadenter" || code === "space") {
 			this.requestRestart();
 		}
 	},

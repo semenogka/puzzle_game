@@ -324,7 +324,67 @@ globalThis.BoxManager = {
 		}
 	},
 
+	holdDrag(runtime) {
+		if (this.dragHeld) return;
+		const type = runtime?.objects?.Box;
+		if (!type || typeof type.getAllInstances !== "function") return;
+		const held = new Map();
+		const boxes = type.getAllInstances();
+		for (let i = 0; i < boxes.length; i++) {
+			const box = boxes[i];
+			const behavior = box?.behaviors?.["Перетаскивание"] || box?.behaviors?.["DragDrop"];
+			if (!behavior) continue;
+			try {
+				if (behavior.isDragging && typeof behavior.drop === "function") behavior.drop();
+			} catch (error) {}
+			held.set(box, behavior.isEnabled !== false && behavior.enabled !== false);
+			behavior.isEnabled = false;
+			behavior.enabled = false;
+		}
+		this.dragHeld = held;
+	},
+
+	releaseDrag() {
+		const held = this.dragHeld;
+		if (!held) return;
+		this.dragHeld = null;
+		for (const [box, enabled] of held) {
+			if (!box || box.destroyed || box.isDestroyed) continue;
+			const behavior = box.behaviors?.["Перетаскивание"] || box.behaviors?.["DragDrop"];
+			if (!behavior) continue;
+			behavior.isEnabled = enabled;
+			behavior.enabled = enabled;
+		}
+	},
+
+	dropAll(runtime) {
+		const boxes = new Set(this.startPositions.keys());
+
+		if (runtime?.objects.Box) {
+			for (const box of runtime.objects.Box.getAllInstances()) {
+				boxes.add(box);
+			}
+		}
+
+		for (const box of boxes) {
+			if (!box || box.destroyed) continue;
+
+			const behavior =
+				box.behaviors?.["Перетаскивание"] ||
+				box.behaviors?.["DragDrop"];
+
+			if (!behavior) continue;
+
+			if (behavior.isDragging) {
+				behavior.drop();
+			}
+		}
+
+		this.motions.clear();
+		this.lockedBoxes.clear();
+	},
 	update(boxes, grounds, player, lines, deltaTime) {
+		if (globalThis.GameOverManager?.active) return;
 		const viewport = player.layer.getViewport();
 		this.register(boxes);
 		this.updateLockedBoxes(deltaTime);

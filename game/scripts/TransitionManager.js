@@ -48,7 +48,18 @@ globalThis.TransitionManager = {
 			const tick = runtime.tickCount;
 			if (tick === this.lastTick) return;
 			this.lastTick = tick;
-			this.advance(Math.min(runtime.dt || 0, 0.05));
+			if (this.recovering) return;
+			try {
+				this.advance(Math.min(runtime.dt || 0, 0.05));
+			} catch (error) {
+				this.recovering = true;
+				try {
+					if (this.active) this.finishExit();
+					else this.finishEntry();
+				} finally {
+					this.recovering = false;
+				}
+			}
 		});
 	},
 
@@ -62,6 +73,7 @@ globalThis.TransitionManager = {
 		this.moveElapsed = 0;
 		this.fadeElapsed = 0;
 		this.bitsElapsed = 0;
+		this.pendingEntry = false;
 
 		this.entryActive = false;
 		this.entryPhase = "idle";
@@ -74,8 +86,9 @@ globalThis.TransitionManager = {
 	initialize(runtime, player) {
 		this.bind(runtime);
 		this.runtime = runtime;
-		if (!this.pendingEntry && !this.entryActive && !this.active) this.reset();
-		if (this.pendingEntry && player && !this.entryActive && !this.active) {
+		if (this.entryActive) this.finishEntry();
+		if (!this.pendingEntry && !this.active) this.reset();
+		if (this.pendingEntry && player && !this.active) {
 			this.startEntry(runtime, player);
 		}
 	},
@@ -124,7 +137,9 @@ globalThis.TransitionManager = {
 				const inst = instances[j];
 				if (!inst || inst === player || inst.opacity == null) continue;
 				if (inst.objectType?.name === "Player") continue;
+				if (inst.destroyed || inst.isDestroyed) continue;
 				if (this.ownsInstance(inst)) continue;
+				if (globalThis.PauseManager?.owns?.(inst)) continue;
 				if (globalThis.EffectManager?.owns?.(inst)) continue;
 				objs.push(inst);
 			}
@@ -143,37 +158,52 @@ globalThis.TransitionManager = {
 			? Math.min(this.fadeStagger, Math.max(0.01, (this.maxFade - this.fadeDuration) / (count - 1)))
 			: 0;
 		const items = new Array(count);
+		let total = 0;
 		for (let i = 0; i < count; i++) {
 			const inst = instances[i];
-			const visible = typeof inst.opacity === "number" ? inst.opacity : 1;
-			items[i] = {
+			let visible = 1;
+			try {
+				if (typeof inst?.opacity === "number") visible = inst.opacity;
+			} catch (error) {
+				continue;
+			}
+			const item = {
 				inst,
 				from: reveal ? 0 : visible,
 				to: reveal ? visible : 0,
 				delay: i * stagger,
 				duration: this.fadeDuration
 			};
-			if (reveal) inst.opacity = 0;
+			if (reveal) {
+				try {
+					inst.opacity = 0;
+				} catch (error) {
+					continue;
+				}
+			}
+			items[i] = item;
+			total = item.delay + this.fadeDuration;
 		}
-		return {
-			items,
-			total: count ? items[count - 1].delay + this.fadeDuration : 0
-		};
+		return { items, total };
 	},
 
 	applyFade(items, elapsed) {
 		for (let i = 0; i < items.length; i++) {
 			const item = items[i];
-			const inst = item.inst;
-			if (!inst) continue;
+			const inst = item?.inst;
+			if (!inst || inst.destroyed || inst.isDestroyed) continue;
 			const local = elapsed - item.delay;
-			if (local <= 0) {
-				inst.opacity = item.from;
-				continue;
+			try {
+				if (local <= 0) {
+					inst.opacity = item.from;
+					continue;
+				}
+				const t = local >= item.duration ? 1 : local / item.duration;
+				const blend = this.smooth(t);
+				inst.opacity = item.from + (item.to - item.from) * blend;
+			} catch (error) {
+				item.inst = null;
 			}
-			const t = local >= item.duration ? 1 : local / item.duration;
-			const blend = this.smooth(t);
-			inst.opacity = item.from + (item.to - item.from) * blend;
 		}
 	},
 
@@ -194,7 +224,19 @@ globalThis.TransitionManager = {
 	},
 
 	start(runtime, player, nextLayout) {
-		if (this.active || this.entryActive) return;
+		if (nextLayout === "Menu") {
+			const current = runtime || this.runtime;
+			this.reset();
+			globalThis.PauseManager?.close?.();
+			globalThis.PlayerManager?.keys?.clear();
+			try {
+				current?.goToLayout("Menu");
+			} catch (error) {}
+			return;
+		}
+		if (this.active) return;
+		if (this.entryActive) this.finishEntry();
+		globalThis.PauseManager?.close?.();
 		this.bind(runtime);
 		this.runtime = runtime || this.runtime;
 		this.player = player;
@@ -225,28 +267,75 @@ globalThis.TransitionManager = {
 
 	startEntry(runtime, player) {
 		if (this.entryActive || this.active) return;
+		globalThis.PauseManager?.close?.();
 		this.bind(runtime);
 		this.runtime = runtime || this.runtime;
 		this.entryPlayer = player;
 		this.entryActive = true;
 		this.pendingEntry = false;
-		this.computeCenter(player);
-		this.entryTargetX = player ? player.x : this.centerX;
-		this.entryTargetY = player ? player.y : this.centerY;
-		if (player) {
-			player.x = this.centerX;
-			player.y = this.centerY;
+		try {
+			this.computeCenter(player);
+			this.entryTargetX = player ? player.x : this.centerX;
+			this.entryTargetY = player ? player.y : this.centerY;
+			if (player) {
+				player.x = this.centerX;
+				player.y = this.centerY;
+			}
+			const fade = this.makeFade(this.collectFadeObjects(this.centerX, this.centerY, player), true);
+			this.entryFadeObjects = fade.items.filter(Boolean);
+			this.entryTotalFadeDuration = fade.total;
+			this.entryFadeElapsed = 0;
+			this.entryMoveElapsed = 0;
+			this.buildOverlay();
+			this.setOverlayOpacity(1);
+			this.entryPhase = "bits";
+			this.entryBitsElapsed = 0;
+			this.stopPlayer();
+		} catch (error) {
+			this.finishEntry();
 		}
-		const fade = this.makeFade(this.collectFadeObjects(this.centerX, this.centerY, player), true);
-		this.entryFadeObjects = fade.items;
-		this.entryTotalFadeDuration = fade.total;
-		this.entryFadeElapsed = 0;
+	},
+
+	finishEntry() {
+		const items = this.entryFadeObjects || [];
+		for (let i = 0; i < items.length; i++) {
+			const item = items[i];
+			if (!item?.inst || item.inst.destroyed || item.inst.isDestroyed) continue;
+			try {
+				item.inst.opacity = item.to;
+			} catch (error) {}
+		}
+		this.clearOverlay();
+		this.entryActive = false;
+		this.entryPhase = "idle";
+		this.entryPlayer = null;
+		this.entryFadeObjects = [];
 		this.entryMoveElapsed = 0;
-		this.buildOverlay();
-		this.setOverlayOpacity(1);
-		this.entryPhase = "bits";
-		this.entryBitsElapsed = 0;
-		this.stopPlayer();
+		this.entryFadeElapsed = 0;
+	},
+
+	finishExit() {
+		const runtime = this.runtime;
+		const next = this.nextLayout;
+		this.clearOverlay();
+		this.active = false;
+		this.phase = "idle";
+		this.player = null;
+		this.nextLayout = null;
+		this.fadeObjects = [];
+		this.moveElapsed = 0;
+		this.fadeElapsed = 0;
+		this.bitsElapsed = 0;
+		if (!this.hasLayout(runtime, next)) {
+			this.pendingEntry = false;
+			return;
+		}
+		this.pendingEntry = true;
+		try {
+			runtime.goToLayout(next);
+		} catch (error) {
+			this.pendingEntry = false;
+		}
 	},
 
 	advance(dt) {
@@ -536,15 +625,17 @@ globalThis.TransitionManager = {
 		const overlay = this.overlay;
 		if (!overlay) return;
 		const value = Math.max(0, Math.min(1, opacity));
-		if (overlay.veil) overlay.veil.opacity = value;
+		const paint = (inst, amount) => {
+			if (!inst || inst.destroyed || inst.isDestroyed) return;
+			try {
+				inst.opacity = amount;
+			} catch (error) {}
+		};
+		paint(overlay.veil, value);
 		const columns = overlay.columns;
-		for (let i = 0; i < columns.length; i++) {
-			if (columns[i].inst) columns[i].inst.opacity = value;
-		}
+		for (let i = 0; i < columns.length; i++) paint(columns[i].inst, value);
 		const heads = overlay.heads;
-		for (let i = 0; i < heads.length; i++) {
-			if (heads[i].inst) heads[i].inst.opacity = heads[i].alpha * value;
-		}
+		for (let i = 0; i < heads.length; i++) paint(heads[i].inst, heads[i].alpha * value);
 	},
 
 	tickOverlay(dt) {

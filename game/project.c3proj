@@ -60,6 +60,7 @@
 			"Box",
 			"Мышь",
 			"Спрайт",
+			"Backdrop",
 			"Dot",
 			"Frame",
 			"DottedLine",
@@ -70,24 +71,19 @@
 			"FakeDoor",
 			"Текст3",
 			"Detect",
-			"heavyBox",
 			"Текст4",
 			"ы",
 			"groundMove",
 			"ненажатая",
 			"нажатая",
-			"Door2",
-			"Door3",
-			"Door4",
-			"Door0",
 			"целое",
 			"чутьРазбитое",
 			"сильноРазбитое",
 			"Текст5",
-			"smallBox",
-			"what1",
-			"what2",
-			"what3"
+			"what",
+			"пушка",
+			"замок",
+			"пуля"
 		],
 		"subfolders": []
 	},
@@ -100,6 +96,7 @@
 	},
 	"layouts": {
 		"items": [
+			"Menu",
 			"Level1",
 			"Level2",
 			"Level3",
@@ -112,12 +109,16 @@
 			"Level10",
 			"Level11",
 			"Level12",
-			"Level13"
+			"Level13",
+			"Level16",
+			"Level14",
+			"Level15"
 		],
 		"subfolders": []
 	},
 	"eventSheets": {
 		"items": [
+			"Меню",
 			"Список событий 1",
 			"Список событий 2",
 			"Список событий 3",
@@ -130,7 +131,10 @@
 			"Список событий 10",
 			"Список событий 11",
 			"Список событий 12",
-			"Список событий 13"
+			"Список событий 13",
+			"Список событий 14",
+			"Список событий 16",
+			"Список событий 15"
 		],
 		"subfolders": []
 	},
@@ -261,6 +265,54 @@
 					"name": "CrushManager.js",
 					"type": "application/javascript",
 					"sid": 537340809982354,
+					"script-info": {
+						"purpose": "none"
+					}
+				},
+				{
+					"name": "MenuManager.js",
+					"type": "application/javascript",
+					"sid": 990601,
+					"script-info": {
+						"purpose": "none"
+					}
+				},
+				{
+					"name": "PauseManager.js",
+					"type": "application/javascript",
+					"sid": 990602,
+					"script-info": {
+						"purpose": "none"
+					}
+				},
+				{
+					"name": "RestartManager.js",
+					"type": "application/javascript",
+					"sid": 990603,
+					"script-info": {
+						"purpose": "none"
+					}
+				},
+				{
+					"name": "GlassesManager.js",
+					"type": "application/javascript",
+					"sid": 990604,
+					"script-info": {
+						"purpose": "none"
+					}
+				},
+				{
+					"name": "BackdropManager.js",
+					"type": "application/javascript",
+					"sid": 990607,
+					"script-info": {
+						"purpose": "none"
+					}
+				},
+				{
+					"name": "CrtManager.js",
+					"type": "application/javascript",
+					"sid": 990608,
 					"script-info": {
 						"purpose": "none"
 					}
@@ -404,6 +456,14 @@
 					"file-info": {
 						"purpose": "none"
 					}
+				},
+				{
+					"name": "pink.svg",
+					"type": "image/svg+xml",
+					"sid": 991610170,
+					"file-info": {
+						"purpose": "none"
+					}
 				}
 			],
 			"subfolders": []
@@ -488,5 +548,5 @@
 	},
 	"viewportWidth": 1920,
 	"viewportHeight": 1080,
-	"firstLayout": null
+	"firstLayout": "Menu"
 }

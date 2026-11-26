@@ -11,6 +11,7 @@ globalThis.EffectManager = {
 		this.bound = true;
 		this.runtime = runtime;
 		runtime.addEventListener("tick", () => {
+			if (globalThis.PauseManager?.paused) return;
 			if (!this.live.length) return;
 			this.advance(Math.min(runtime.dt || 0, 0.05));
 		});

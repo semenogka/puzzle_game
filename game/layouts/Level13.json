@@ -175,54 +175,6 @@
 					}
 				},
 				{
-					"type": "Box",
-					"properties": {
-						"initially-visible": true,
-						"initial-animation": "SquareBlue",
-						"initial-frame": 0,
-						"enable-collisions": true,
-						"live-preview": false
-					},
-					"uid": 149,
-					"sid": 190288905428769,
-					"tags": "gravity up",
-					"instanceVariables": {},
-					"behaviors": {
-						"Перетаскивание": {
-							"properties": {
-								"axes": "both",
-								"enabled": false
-							}
-						},
-						"Твёрдый": {
-							"properties": {
-								"enabled": true,
-								"use-instance-tags": true,
-								"tags": ""
-							}
-						}
-					},
-					"materialSurfaceType": "smooth",
-					"showing": true,
-					"locked": false,
-					"world": {
-						"x": 767,
-						"y": 334,
-						"width": 140,
-						"height": 120,
-						"originX": 0.5,
-						"originY": 0.5,
-						"color": [
-							1,
-							1,
-							1,
-							1
-						],
-						"z": 0,
-						"angle": 0
-					}
-				},
-				{
 					"type": "Door",
 					"properties": {
 						"initially-visible": true,
@@ -240,10 +192,10 @@
 					"showing": true,
 					"locked": false,
 					"world": {
-						"x": 1800,
-						"y": 905,
-						"width": 120.00000000000001,
-						"height": 190,
+						"x": 1765.5,
+						"y": 856.5,
+						"width": 189,
+						"height": 287,
 						"originX": 0.5,
 						"originY": 0.5,
 						"color": [
@@ -274,10 +226,10 @@
 					"showing": true,
 					"locked": false,
 					"world": {
-						"x": 260,
-						"y": 474,
-						"width": 63,
-						"height": 73,
+						"x": 198.5,
+						"y": 922,
+						"width": 102,
+						"height": 116,
 						"originX": 0.5,
 						"originY": 0.5,
 						"color": [
@@ -293,7 +245,7 @@
 				{
 					"type": "Текст",
 					"properties": {
-						"text": "Q - гравитация",
+						"text": "прикол с пульками",
 						"enable-bbcode": false,
 						"font": "Correction Brush",
 						"size": 26,
@@ -324,8 +276,8 @@
 					"showing": true,
 					"locked": false,
 					"world": {
-						"x": 39,
-						"y": 74,
+						"x": 1238,
+						"y": 78,
 						"width": 640,
 						"height": 250,
 						"originX": 0,
@@ -349,8 +301,8 @@
 						"enable-collisions": true,
 						"live-preview": false
 					},
-					"uid": 143,
-					"sid": 651207064123973,
+					"uid": 881517001,
+					"sid": 130183442983074,
 					"tags": "",
 					"instanceVariables": {},
 					"behaviors": {
@@ -366,10 +318,10 @@
 					"showing": true,
 					"locked": false,
 					"world": {
-						"x": 749,
-						"y": 578,
-						"width": 1490,
-						"height": 38,
+						"x": 92.5,
+						"y": 509,
+						"width": 182,
+						"height": 58,
 						"originX": 0.5,
 						"originY": 0.5,
 						"color": [
@@ -383,37 +335,131 @@
 					}
 				},
 				{
-					"type": "Ground",
+					"type": "пушка",
 					"properties": {
 						"initially-visible": true,
-						"initial-animation": "Animation 1",
+						"initial-animation": "Default",
 						"initial-frame": 0,
 						"enable-collisions": true,
 						"live-preview": false
 					},
 					"uid": 145,
-					"sid": 279672118699474,
-					"tags": "glass",
+					"sid": 111821517714048,
+					"tags": "",
 					"instanceVariables": {},
-					"behaviors": {
-						"Твёрдый": {
-							"properties": {
-								"enabled": true,
-								"use-instance-tags": true,
-								"tags": ""
-							}
-						}
-					},
+					"behaviors": {},
 					"materialSurfaceType": "smooth",
 					"showing": true,
 					"locked": false,
 					"world": {
-						"x": 1703,
-						"y": 578,
-						"width": 414,
-						"height": 36,
+						"x": 112,
+						"y": 444,
+						"width": 253,
+						"height": 172,
 						"originX": 0.5,
 						"originY": 0.5,
+						"color": [
+							1,
+							1,
+							1,
+							1
+						],
+						"z": 0,
+						"angle": 0.46126509287092043
+					}
+				},
+				{
+					"type": "ненажатая",
+					"properties": {
+						"initially-visible": true,
+						"initial-animation": "Default",
+						"initial-frame": 0,
+						"enable-collisions": true,
+						"live-preview": false
+					},
+					"uid": 143,
+					"sid": 910890380088046,
+					"tags": "",
+					"instanceVariables": {},
+					"behaviors": {},
+					"materialSurfaceType": "smooth",
+					"showing": true,
+					"locked": false,
+					"world": {
+						"x": 130,
+						"y": 51,
+						"width": 106.28218290313629,
+						"height": 37.097664434904466,
+						"originX": 0.5,
+						"originY": 0.5,
+						"color": [
+							1,
+							1,
+							1,
+							1
+						],
+						"z": 0,
+						"angle": 0
+					}
+				},
+				{
+					"type": "замок",
+					"properties": {
+						"initially-visible": true,
+						"initial-animation": "Default",
+						"initial-frame": 0,
+						"enable-collisions": true,
+						"live-preview": false
+					},
+					"uid": 881517002,
+					"sid": 875912931977170,
+					"tags": "",
+					"instanceVariables": {},
+					"behaviors": {},
+					"materialSurfaceType": "smooth",
+					"showing": true,
+					"locked": false,
+					"world": {
+						"x": 1831,
+						"y": 889,
+						"width": 51,
+						"height": 42,
+						"originX": 0.5,
+						"originY": 0.5,
+						"color": [
+							1,
+							1,
+							1,
+							1
+						],
+						"z": 0,
+						"angle": 0
+					}
+				},
+				{
+					"type": "пуля",
+					"properties": {
+						"initially-visible": true,
+						"initial-animation": "Default",
+						"initial-frame": 0,
+						"enable-collisions": true,
+						"live-preview": false
+					},
+					"uid": 881517003,
+					"sid": 720525849322086,
+					"tags": "",
+					"instanceVariables": {},
+					"behaviors": {},
+					"materialSurfaceType": "smooth",
+					"showing": true,
+					"locked": false,
+					"world": {
+						"x": 147,
+						"y": 440,
+						"width": 71.591796875,
+						"height": 46.46484375,
+						"originX": 0.5490463215258855,
+						"originY": 0.5349794238683128,
 						"color": [
 							1,
 							1,
